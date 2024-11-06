@@ -1,10 +1,11 @@
 Package: DuelingOptimization
-Title: What the Package Does (One Line, Title Case)
+Title:convex optimization with preference (dueling) feedback
 Version: 0.0.0.9000
 Authors@R: 
     person("Arpan", "Ghosh", , "arpan2001@tamu.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description:  The goal is to find the optimal point with the least possible query
+complexity, however, without the luxury of even a zeroth order feedback. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
