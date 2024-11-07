@@ -8,3 +8,8 @@ compare_points <- function(x1, x2) {
   # Replace this with real preference feedback or a function proxy.
   return(sample(c(-1, 1), 1))  # Random feedback for illustration
 }
+
+f_value <- function(x) {
+  # Function to calculate the value of f at point x (for tracking purposes)
+  return(sum(x^2))  # Example: simple quadratic function for illustration
+}
