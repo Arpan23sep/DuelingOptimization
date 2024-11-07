@@ -8,3 +8,12 @@ DuelingOptimizationR is an R package that implements algorithms for convex optim
 -   alpha_beta_NGD: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence.
 
 The core of these algorithms lies in estimating gradient directions based on noisy, preference-based comparisons. This enables optimization in scenarios where only binary feedback is available for queried pairs of points.
+
+#Usage
+
+- 1. beta_Normalized_Gradient:
+beta_NGD performs gradient descent for β-smooth convex functions based solely on dueling (comparison-based) feedback.
+
+- alpha_beta_NGD
+alpha_beta_NGD extends beta_NGD for optimizing α-strongly convex and β-smooth functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
+
