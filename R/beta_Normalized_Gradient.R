@@ -19,5 +19,17 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
   x <- initial_point
   x_best <- x  # Track the best point found
   f_best <- Inf  # Placeholder for best function value
+
+  for (t in 1:T) {
+    # Generate a random unit vector in d dimensions
+    u <- rnorm(length(x))
+    u <- u / sqrt(sum(u^2))
+
+    # Compute perturbed points for comparison feedback
+    x_plus <- x + gamma * u
+    x_minus <- x - gamma * u
+  }
   return(x_best)
 }
+
+
