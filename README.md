@@ -14,6 +14,14 @@ The core of these algorithms lies in estimating gradient directions based on noi
 - 1. beta_Normalized_Gradient:
 beta_NGD performs gradient descent for β-smooth convex functions based solely on dueling (comparison-based) feedback.
 
+result <- beta_NGD(initial_point, eta, gamma, T)
+
+#Arguments
+- initial_point: A numeric vector representing the starting point for the optimization.
+- eta: The step size for gradient descent.
+- gamma: The perturbation parameter to calculate comparison-based feedback.
+- T: The number of iterations.
+
 - alpha_beta_NGD
 alpha_beta_NGD extends beta_NGD for optimizing α-strongly convex and β-smooth functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
 
