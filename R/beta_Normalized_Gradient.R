@@ -29,6 +29,24 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
     x_plus <- x + gamma * u
     x_minus <- x - gamma * u
   }
+  # Simulate comparison feedback (in practice, use real feedback)
+  # For this implementation, assume a function `compare_points` is available
+  # which returns +1 if f(x_plus) < f(x_minus), -1 otherwise.
+  feedback <- compare_points(x_plus, x_minus)
+
+  # Estimate the gradient direction
+  gradient_estimate <- feedback * u
+
+  # Update the current point in the negative gradient direction
+  x <- x - eta * gradient_estimate
+
+  # Track the best point found so far
+  # Assuming a function `f_value` that returns the function value at x
+  f_current <- f_value(x)
+  if (f_current < f_best) {
+    f_best <- f_current
+    x_best <- x
+  }
   return(x_best)
 }
 
