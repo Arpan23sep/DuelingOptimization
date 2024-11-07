@@ -25,3 +25,13 @@ result <- beta_NGD(initial_point, eta, gamma, T)
 - alpha_beta_NGD
 alpha_beta_NGD extends beta_NGD for optimizing α-strongly convex and β-smooth functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
 
+result <- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter = 1000)
+
+#Arguments
+
+- initial_point: A numeric vector for the starting point.
+- alpha: The strong convexity parameter.
+- beta: The smoothness parameter.
+- tolerance: Desired tolerance for convergence.
+- max_iter: Maximum number of iterations (default is 1000).
+
