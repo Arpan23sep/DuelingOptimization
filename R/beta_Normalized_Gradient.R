@@ -13,3 +13,11 @@ f_value <- function(x) {
   # Function to calculate the value of f at point x (for tracking purposes)
   return(sum(x^2))  # Example: simple quadratic function for illustration
 }
+
+beta_NGD <- function(initial_point, eta, gamma, T) {
+  # Initialize variables
+  x <- initial_point
+  x_best <- x  # Track the best point found
+  f_best <- Inf  # Placeholder for best function value
+  return(x_best)
+}
