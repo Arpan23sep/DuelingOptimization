@@ -41,4 +41,7 @@ result <- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter = 1000)
 #Return 
 The near-optimal decision point for the convex function.
 
+#References 
+If you use this package in your research, please cite the original paper:
 
+Saha, A., Koren, T., & Mansour, Y. (2021). Dueling Convex Optimization. Proceedings of the 38th International Conference on Machine Learning.
