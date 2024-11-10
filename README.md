@@ -39,6 +39,20 @@ result \<- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter = 1000
 
 The near-optimal decision point for the convex function.
 
+# Example
+Basic example for alpha_beta_NGD
+# Define an initial point and parameters
+initial_point <- c(1, 1)
+eta <- 0.01
+gamma <- 0.1
+T <- 100
+
+# Run the normalized gradient descent
+optimal_point <- beta_NGD(initial_point, eta, gamma, T)
+print(optimal_point)
+
+
+
 # References :
 
 If you use this package in your research, please cite the original paper:
