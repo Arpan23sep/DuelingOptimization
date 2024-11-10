@@ -8,5 +8,7 @@ Description: The goal is to find the optimal point with the least possible query
     complexity, without the luxury of even zeroth-order feedback.
 License: GPL (>= 3)
 Encoding: UTF-8
+Imports: Rcpp (>= 1.0.5)
+LinkingTo: Rcpp, RcppArmadillo
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
