@@ -63,6 +63,12 @@ max_iter <- 500
 optimal_point <- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter)
 print(optimal_point)
 
+# Installation Instructure
+You can install the DuelingOptimization package directly from GitHub:
+
+install.packages("devtools")
+devtools::install_github(" Arpan23sep/DuelingOptimization")
+
 
 # References :
 
