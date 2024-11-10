@@ -67,7 +67,7 @@ print(optimal_point)
 You can install the DuelingOptimization package directly from GitHub:
 
 install.packages("devtools")
-devtools::install_github(" Arpan23sep/DuelingOptimization")
+devtools::install_github("Arpan23sep/DuelingOptimization")
 
 
 # References :
