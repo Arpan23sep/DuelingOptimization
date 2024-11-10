@@ -47,7 +47,7 @@ eta <- 0.01
 gamma <- 0.1
 T <- 100
 
-# Run the normalized gradient descent
+# Run the normalized gradient descent (Beta_normalized_gradient)
 optimal_point <- beta_NGD(initial_point, eta, gamma, T)
 print(optimal_point)
 
