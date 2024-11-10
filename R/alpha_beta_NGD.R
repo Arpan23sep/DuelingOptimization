@@ -35,5 +35,5 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance, max_iter = 100
   return(x)
 }
 
-.
+
 
