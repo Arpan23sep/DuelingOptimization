@@ -27,4 +27,20 @@ compare_points <- function(beta1, beta2) {
   }
 }
 
+# Initialize parameters
+initial_point <- rep(0, d)  # Start from zero vector
+eta <- 0.01                 # Learning rate
+gamma <- 0.1                # Perturbation parameter
+T <- 100                    # Number of iterations
 
+# Run the beta_NGD function
+result <- beta_NGD(initial_point, eta, gamma, T)
+print("Estimated parameters using beta_NGD:")
+print(result)
+
+# Compare with logistic regression solution from glm for verification
+glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
+print("True beta:")
+print(true_beta)
+print("GLM estimated beta:")
+print(coef(glm_fit))
