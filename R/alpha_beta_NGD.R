@@ -30,7 +30,12 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance, x_0, x_s) {
     epsilon_k <- 400 * d * beta/ ((sqrt(2) - 1) * t_k)
     eta_k <- sqrt(epsilon_k) / (20 * sqrt(d*beta))
     gamma_k <- (epsilon_k / beta)^(3 / 2) / (240 * sqrt(2) * d * (1 + eta_k*t_k)^2 * sqrt(log(480 * sqrt(beta * d)*(1 + eta_k*t_k) / (sqrt(2) * epsilon_k))))
-
+    # Call to Algorithm 1's function (needs to be implemented)
+    # This would ideally return an updated point for phase k
+    x <- beta_NGD(x, eta_k, gamma_k, t_k)
+    print(paste0(k/phase_count*100,"% Done!"))
+    # Update parameters for the next phase
+    # if (norm(x - initial_point, type = "2") < tolerance) break
   }
 
   return(x)
