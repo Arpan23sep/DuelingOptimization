@@ -23,7 +23,7 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
   # Initialize variables
   x <- initial_point
   x_best <- x  # Track the best point found
-  f_best <- Inf  # Placeholder for best function value
+  f_best <- f_value(x)  # Placeholder for best function value
 
   for (t in 1:T) {
     # Generate a random unit vector in d dimensions
@@ -35,7 +35,7 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
     x_minus <- x - gamma * u
 
     # Simulate comparison feedback (in practice, use real feedback)
-    # For this implementation, assume a function `compare_points` is available
+    # For this implementation, assume a function compare_points is available
     # which returns +1 if f(x_plus) < f(x_minus), -1 otherwise.
     feedback <- compare_points(x_plus, x_minus)
 
@@ -46,9 +46,9 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
     x <- x - eta * gradient_estimate
 
     # Track the best point found so far
-    # Assuming a function `f_value` that returns the function value at x
+    # Assuming a function f_value that returns the function value at x
     f_current <- f_value(x)
-    if (f_current < f_best) {
+    if (f_current >= f_best) {
       f_best <- f_current
       x_best <- x
     }
@@ -57,6 +57,7 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
   # Return the best point found
   return(x_best)
 }
+
 
 #' Compare Points Based on Preference Feedback
 #'
