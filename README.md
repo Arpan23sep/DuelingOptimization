@@ -1,76 +1,96 @@
 # DuelingOptimization
 
-DuelingOptimizationR is an R package that implements algorithms for convex optimization with preference-based (dueling) feedback, based on the paper "Dueling Convex Optimization" by Saha et al. This package provides tools for performing convex optimization using only noisy binary feedback on pairs of decision points, as opposed to direct gradient or function value information. The algorithms are suitable for applications like recommender systems, ranking, and online learning, where preference feedback is commonly available.
+DuelingOptimization is an R package that implements algorithms for convex optimization with preference-based (dueling) feedback, based on the paper "Dueling Convex Optimization" by Saha et al. This package provides tools for performing convex optimization using only noisy binary feedback on pairs of decision points, as opposed to direct gradient or function value information. The algorithms are suitable for applications like recommender systems, ranking, and online learning, where preference feedback is commonly available.
 
-# Overview : This package includes two primary functions:
+## Overview 
 
--   beta_Normalized_Gradient: Implements a normalized gradient descent algorithm for general β-smooth convex functions using binary feedback.
--   alpha_beta_NGD: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence.
+This package includes two primary functions:
+
+-   ***beta_Normalized_Gradient***: Implements a normalized gradient descent algorithm for general β-smooth convex functions using binary feedback.
+-   ***alpha_beta_NGD***: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence.
 
 The core of these algorithms lies in estimating gradient directions based on noisy, preference-based comparisons. This enables optimization in scenarios where only binary feedback is available for queried pairs of points.
 
-# Usage :
+## Usage 
 
-1.  beta_Normalized_Gradient: beta_NGD performs gradient descent for β-smooth convex functions based solely on dueling (comparison-based) feedback.
+### 1. beta_Normalized_Gradient
 
-result \<- beta_NGD(initial_point, eta, gamma, T)
+#### Arguments 
 
-# Arguments :
+-   initial_point: A numeric vector representing the starting point for the optimization.
 
-initial_point: A numeric vector representing the starting point for the optimization. - eta: The step size for gradient descent. - gamma: The perturbation parameter to calculate comparison-based feedback. - T: The number of iterations.
+-   eta: The step size for gradient descent.
 
-# Return :
+-   gamma: The perturbation parameter to calculate comparison-based feedback.
+
+-   T: The number of iterations.
+
+#### Return
 
 The best decision point found after T iterations.
 
--2 alpha_beta_NGD alpha_beta_NGD extends beta_NGD for optimizing α-strongly convex and β-smooth functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
+#### Example 
 
-result \<- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter = 1000)
+`Define an initial point and parameters`
 
-# Arguments :
+`initial_point <- c(1, 1)`
+
+`eta <- 0.01`
+
+`gamma <- 0.1`
+
+`T <- 100`
+
+`optimal_point <- beta_NGD(initial_point, eta, gamma, T)`
+
+`print(optimal_point)`
+
+### 2. alpha_beta_NGD 
+
+This function extends *beta_NGD* for optimizing *α-strongly convex* and *β-smooth* functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
+
+`result <- alpha_beta_NGD(initial_point, alpha, beta, tolerance)`
+
+#### Arguments 
 
 -   initial_point: A numeric vector for the starting point.
 -   alpha: The strong convexity parameter.
 -   beta: The smoothness parameter.
 -   tolerance: Desired tolerance for convergence.
--   max_iter: Maximum number of iterations (default is 1000).
 
-# Return :
+#### Return 
 
 The near-optimal decision point for the convex function.
 
-# Example
-Basic example for beta_NGD
-# Define an initial point and parameters
-initial_point <- c(1, 1)
-eta <- 0.01
-gamma <- 0.1
-T <- 100
+#### Example 
 
-# Run the normalized gradient descent (Beta_normalized_gradient)
-optimal_point <- beta_NGD(initial_point, eta, gamma, T)
-print(optimal_point)
+`#Set up parameters for strongly convex optimization`
 
-# Basic example of alpha_beta_NGD
-Set up parameters for strongly convex optimization
-initial_point <- c(1, 1)
-alpha <- 0.1
-beta <- 0.5
-tolerance <- 1e-4
-max_iter <- 500
+`initial_point <- c(1, 1)`
 
-# Run the phase-based gradient descent
-optimal_point <- alpha_beta_NGD(initial_point, alpha, beta, tolerance, max_iter)
-print(optimal_point)
+`alpha <- 0.1 beta <- 0.5`
 
-# Installation Instructure
-You can install the DuelingOptimization package directly from GitHub:
+`tolerance <- 1e-4`
 
-install.packages("devtools")
-devtools::install_github("Arpan23sep/DuelingOptimization")
+`max_iter <- 500`
 
+`#Run the phase-based gradient descent`
 
-# References :
+`optimal_point <- alpha_beta_NGD(initial_point, alpha, beta, tolerance)`
+
+`print(optimal_point)`
+
+### Installation Instruction
+
+You can install the **DuelingOptimization** package directly from GitHub once it\'s available. First, make sure you have the **`devtools`** package installed:
+
+`install.packages("devtools")`
+
+Then, you can install **DuelingOptimization** from GitHub:
+
+`devtools::install_github("Arpan23sep/DuelingOptimization")`
+
+### References :
 
 If you use this package in your research, please cite the original paper:
 
