@@ -90,6 +90,10 @@ Then, you can install **DuelingOptimization** from GitHub:
 
 `devtools::install_github("Arpan23sep/DuelingOptimization")`
 
+### Future Work
+
+We aim to extend these algorithms to standard neural network settings. Given the large number of parameters involved in neural networks, implementing key components in **Rcpp** will enhance computational efficiency. Additionally, we plan to optimize the existing R code further for improved performance. Future work will also include an analysis of how the convergence rate of our algorithms scales with increasing dimensionality.
+
 ### References :
 
 If you use this package in your research, please cite the original paper:
