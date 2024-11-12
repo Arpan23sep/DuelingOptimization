@@ -2,8 +2,7 @@ Package: DuelingOptimization
 Title: Convex Optimization with Preference (Dueling) Feedback
 Version: 0.0.0.9000
 Authors@R: 
-    person("Arpan", "Ghosh", email = "arpan2001@tamu.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Arpan", "Ghosh", email = "arpan2001@tamu.edu", role = c("aut", "cre"))
 Description: The goal is to find the optimal point with the least possible query 
     complexity, without the luxury of even zeroth-order feedback.
 License: GPL (>= 3)
