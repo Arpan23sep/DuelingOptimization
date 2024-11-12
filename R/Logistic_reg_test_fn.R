@@ -1,5 +1,5 @@
 # Generate synthetic data for logistic regression
-set.seed(42)
+set.seed(50)
 n <- 100  # Number of data points
 d <- 2    # Number of features
 
