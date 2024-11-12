@@ -14,11 +14,12 @@ int signRecovery(NumericVector x, NumericVector y, double delta) {
   double lt_x_y, lt_y_x;
 
   // Main loop for querying the oracle
+  //Using resampling trick
   while (true) {
     t += 1;
 
-    // Simulate the noisy feedback oracle (replace with actual feedback if available)
-    int ot = Rcpp::as<int>(Rcpp::Function("noisy_feedback")(x, y));
+    // try to compare points x & y
+    int ot = Rcpp::as<int>(Rcpp::Function("compare_points")(x, y));
     w += ot;  // Aggregate feedback
 
     // Calculate the probability estimate and confidence bound
