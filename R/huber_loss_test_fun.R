@@ -1,9 +1,9 @@
 #Define the Huber loss function
+#It is mainly used when there are outliers in the data
 huber_loss <- function(beta, X, y, delta = 1.0) {
-  residuals <- y - X %*% beta
-  loss <- ifelse(abs(residuals) <= delta,
-                 0.5 * residuals^2,
-                 delta * abs(residuals) - 0.5 * delta^2)
+  residuals <- y - X %*% beta      #simple linear regression case
+  #Loss function for huber loss
+  loss <- ifelse(abs(residuals) <= delta,0.5 * residuals^2,delta * abs(residuals) - 0.5 * delta^2)
   return(mean(loss))
 }
 
@@ -21,20 +21,20 @@ set.seed(42)
 n <- 100  # Number of data points
 d <- 2    # Number of features
 
-X <- matrix(rnorm(n * d), n, d)        # Random features
+X <- matrix(rnorm(n * d), n, d)        # data matrix
 true_beta <- c(2, -3)                  # True parameter vector
-y <- X %*% true_beta + rnorm(n, 0, 1)  # Response with some noise
+y <- X %*% true_beta + rnorm(n, 0, 1)  # Response with some noise added
 
-# Initialize parameters for Algorithm 1
+# Initialize parameters for beta_NGD
 initial_point <- rep(0, d)  # Starting point
 eta <- 0.01                 # Learning rate
 gamma <- 0.1                # Perturbation parameter
 T <- 100                    # Number of iterations
 delta <- 1.0                # Huber loss delta threshold
 
-# Run Algorithm 1 (beta_NGD) with Huber loss
-result <- beta_NGD(initial_point, eta, gamma, T, X, y, delta)
-
+# Run beta_NGD with Huber loss
+#result <- beta_NGD(initial_point, eta, gamma, T, X, y, delta)
+result <- beta_NGD(initial_point, eta, gamma, T)
 # Output the estimated parameters
 cat("Estimated parameters using beta_NGD with Huber loss:\n")
 print(result)
