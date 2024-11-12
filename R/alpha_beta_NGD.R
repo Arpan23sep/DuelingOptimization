@@ -9,12 +9,13 @@
 #\eta - learning rate (step size) to control how much the point updates each iteration.
 
 
-alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance, x_0, x_s) {
+alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance) {
 
   # Initialize variables
   x_1 <- initial_point
   d <- length(x_1)
-  D <- norm(x_0-x_s, type = "2")^2  # Initial distance, used for convergence checks
+  D <- norm(x_1, type = "2")^2
+  #D <- norm(x_1-x_s, type = "2")^2  # Initial distance, used for convergence checks
   phase_count <- ceiling(log2(alpha / tolerance))  # Number of phases needed
   t <- 800 * d * beta / ((sqrt(2) - 1) * alpha)
   t_1 <- t* norm(x_1-x_s, type = "2")^2
