@@ -88,4 +88,6 @@ compare_points <- function(x1, x2) {
 f_value <- function(x) {
   # Function to calculate the value of f at point x (for tracking purposes)
   return(sum(x^2))  # Example: simple quadratic function for illustration
+  #Change according to your objective function
+  #Example for linear regression,logistic regression, huber loss
 }
