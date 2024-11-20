@@ -19,12 +19,12 @@
 #' T <- 100
 #' result <- beta_NGD(initial_point, eta, gamma, T)
 #' print(result)
+
 beta_NGD <- function(initial_point, eta, gamma, T) {
   # Initialize variables
   x <- initial_point
   x_best <- x  # Track the best point found
   f_best <- f_value(x)  # Placeholder for best function value
-
   for (t in 1:T) {
     # Generate a random unit vector in d dimensions
     u <- rnorm(length(x))
@@ -43,21 +43,31 @@ beta_NGD <- function(initial_point, eta, gamma, T) {
     gradient_estimate <- feedback * u
 
     # Update the current point in the negative gradient direction
-    x <- x - eta * gradient_estimate
+    x <- x + eta * gradient_estimate
 
     # Track the best point found so far
     # Assuming a function f_value that returns the function value at x
     f_current <- f_value(x)
-    if (f_current >= f_best) {
+    if (f_current < f_best) {
       f_best <- f_current
       x_best <- x
     }
+    # print(paste0("Completed ", 100*t/T, "%"))
+    # print(f_best)
   }
 
   # Return the best point found
   return(x_best)
 }
 
+beta_NGD_optimum<- function(initial_point, D, eigen_max, epsilon=0.1){
+  d= length(initial_point)
+  beta= eigen_max
+  eta= sqrt(epsilon)/(20*sqrt(d*beta))
+  T= d*beta*D/epsilon
+  gamma= (epsilon/beta)^(3/2)/(240*sqrt(2)*d*(D+eta*T)^2*sqrt(log(480*sqrt(beta*d)*(D+ eta*T)/sqrt(2*epsilon))))
+  return(beta_NGD(initial_point, eta, gamma, T))
+}
 
 #' Compare Points Based on Preference Feedback
 #'
@@ -85,9 +95,16 @@ compare_points <- function(x1, x2) {
 #' @param x A numeric vector representing the point at which to evaluate `f`.
 #' @return A numeric value representing the function value at `x`.
 #' @export
-f_value <- function(x) {
-  # Function to calculate the value of f at point x (for tracking purposes)
-  return(sum(x^2))  # Example: simple quadratic function for illustration
-  #Change according to your objective function
-  #Example for linear regression,logistic regression, huber loss
-}
+# f_value <- function(x) {
+#   # Function to calculate the value of f at point x (for tracking purposes)
+#   return(sum(x^2))  # Example: simple quadratic function for illustration
+#   #Change according to your objective function
+#   #Example for linear regression,logistic regression, huber loss
+# }
+
+# f_value <- function(x) {
+#   # Function to calculate the value of f at point x (for tracking purposes)
+#   return(x^2 + 3*sin(x)^2)  # Example: simple quadratic function for illustration
+#   #Change according to your objective function
+#   #Example for linear regression,logistic regression, huber loss
+# }
