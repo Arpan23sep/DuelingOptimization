@@ -31,17 +31,16 @@
 #' tolerance <- 1e-4
 #' result <- alpha_beta_NGD(initial_point, alpha, beta, tolerance)
 #' print(result)
-alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance) {
+alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance=0.1) {
 
   # Initialize variables
   x_1 <- initial_point
   d <- length(x_1)
-  D <- norm(x_1, type = "2")^2  # Initial distance for convergence checks
   phase_count <- ceiling(log2(alpha / tolerance))  # Number of phases needed
 
   # Set parameters for the first phase
   t <- 800 * d * beta / ((sqrt(2) - 1) * alpha)
-  t_1 <- t * norm(x_1 - x_s, type = "2")^2
+  t_1 <- t * D
   epsilon_1 <- 400 * d * beta * D / ((sqrt(2) - 1) * t_1)
   eta_1 <- sqrt(epsilon_1) / (20 * sqrt(d * beta))
   gamma_1 <- (epsilon_1 / beta)^(3 / 2) / (240 * sqrt(2) * d * (D + eta_1 * t_1)^2 *
@@ -64,6 +63,7 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, tolerance) {
     x <- beta_NGD(x, eta_k, gamma_k, t_k)
     print(paste0(k / phase_count * 100, "% Done!"))
     # if (norm(x - initial_point, type = "2") < tolerance) break
+    print(paste0("Completed ", 100*k/phase_count, "%"))
   }
 
   return(x)
