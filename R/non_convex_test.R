@@ -13,26 +13,12 @@ compare_points <- function(x1, x2) {
   }
 }
 
-# Testing Algorithm 1 with the given function
-test_algorithm_1 <- function() {
-  # Parameters
-  initial_point <- 5         # Starting point
-  eta <- 0.1                 # Learning rate
-  gamma <- 0.1               # Perturbation parameter
-  T <- 50                    # Number of iterations
+initial_point <- 5
+D <- 25
+eigen_max <- 8
+result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1)
 
-  # Run Algorithm 1
-  result <- beta_NGD(
-    initial_point = initial_point,
-    eta = eta,
-    gamma = gamma,
-    T = T
-  )
+# Print the result
+cat("Optimal point found:", result, "\n")
+cat("Function value at optimal point:", f_value(result), "\n")
 
-  # Print the result
-  cat("Optimal point found:", result, "\n")
-  cat("Function value at optimal point:", f_value(result), "\n")
-}
-
-# Run the test
-test_algorithm_1()
