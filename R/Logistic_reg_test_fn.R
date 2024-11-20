@@ -1,12 +1,12 @@
 # Generate synthetic data for logistic regression
-set.seed(50)
+set.seed(501)
 n <- 100  # Number of data points
-d <- 2    # Number of features
+d <- 5    # Number of features
 
 # Generate random features
 X <- matrix(rnorm(n * d), n, d)
 # Generate labels with a true beta
-true_beta <- c(1, -1)
+true_beta <- c(1, 2, 3, 4, 5)
 prob <- 1 / (1 + exp(-X %*% true_beta))
 y <- rbinom(n, 1, prob)  # Binary labels
 
@@ -28,13 +28,15 @@ compare_points <- function(beta1, beta2) {
 }
 
 # Initialize parameters
-initial_point <- rep(0, d)  # Start from zero vector
-eta <- 0.01                 # Learning rate
-gamma <- 0.1                # Perturbation parameter
-T <- 100                    # Number of iterations
+initial_point <- c(2,1,4,3,6)
+D <- 10 # Start from zero vector
+Hessian <-  t(X) %*% X
+eigenvalues <- eigen(Hessian)$values
+eigen_max <- 0.25 * max(eigenvalues)
+                  # Number of iterations
 
 # Run the beta_NGD function
-result <- beta_NGD(initial_point, eta, gamma, T)
+result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1)
 print("Estimated parameters using beta_NGD:")
 print(result)
 
