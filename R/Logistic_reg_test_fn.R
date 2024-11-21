@@ -1,6 +1,6 @@
 # Generate synthetic data for logistic regression
 set.seed(501)
-n <- 100  # Number of data points
+n <- 1000  # Number of data points
 d <- 5    # Number of features
 
 # Generate random features
@@ -19,13 +19,13 @@ f_value <- function(beta) {
 }
 
 # Comparison function to determine preference between two parameter vectors
-compare_points <- function(beta1, beta2) {
-  if (f_value(beta1) < f_value(beta2)) {
-    return(1)
-  } else {
-    return(-1)
-  }
-}
+#compare_points <- function(beta1, beta2) {
+#  if (f_value(beta1) < f_value(beta2)) {
+#    return(1)
+#  } else {
+#    return(-1)
+#  }
+#}
 
 # Initialize parameters
 initial_point <- c(2,1,4,3,6)
@@ -33,12 +33,14 @@ D <- 10 # Start from zero vector
 Hessian <-  t(X) %*% X
 eigenvalues <- eigen(Hessian)$values
 eigen_max <- 0.25 * max(eigenvalues)
-                  # Number of iterations
+# Number of iterations
 
 # Run the beta_NGD function
-result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1)
+result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1,f_value)
+point <- result$optimum
+f_array <- result$f_array
 print("Estimated parameters using beta_NGD:")
-print(result)
+print(point)
 
 # Compare with logistic regression solution from glm for verification
 glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
@@ -46,3 +48,20 @@ print("True beta:")
 print(true_beta)
 print("GLM estimated beta:")
 print(coef(glm_fit))
+
+f_data <- data.frame(
+  Index = 0:(length(f_array)-1),
+  Value = f_array
+)
+
+library(ggplot2)
+# Plot using ggplot2
+print(ggplot(f_data, aes(x = Index, y = Value)) +
+        geom_line(color = "blue") +           # Line connecting points
+        # geom_point(color = "red", size = 0.0001) + # Points on the line
+        labs(title = "Negative loglikelihood vs Iterations",
+             x = "Iterations",
+             y = "Negative loglikelihood") +
+        theme_minimal() +
+        theme(plot.title = element_text(hjust = 0.5)))  # Center the title
+

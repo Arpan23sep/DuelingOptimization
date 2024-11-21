@@ -39,18 +39,21 @@ f_value <- function(beta) {
 
 #plotting
 library(ggplot2)
-f_array= beta_NGD_optimum_seq(c(4, 2, 3, 2), 5, max_eigenvalue)
+result = beta_NGD_optimum(c(4, 2, 3, 2), 5, max_eigenvalue,0.1,f_value)
+result2 <- alpha_beta_NGD(c(4, 2, 3, 2), min_eigenvalue,max_eigenvalue , 5, tolerance=0.1,f)
+f_array = result$f_array
+optimum = result$optimum
 f_data <- data.frame(
   Index = 0:(length(f_array)-1),
   Value = f_array
 )
 
 # Plot using ggplot2
-ggplot(f_data, aes(x = Index, y = Value)) +
-  geom_line(color = "blue") +           # Line connecting points
-  # geom_point(color = "red", size = 0.0001) + # Points on the line
-  labs(title = "RSS vs Iterations",
-       x = "Iterations",
-       y = "RSS") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))  # Center the title
+print(ggplot(f_data, aes(x = Index, y = Value)) +
+        geom_line(color = "blue") +           # Line connecting points
+        # geom_point(color = "red", size = 0.0001) + # Points on the line
+        labs(title = "RSS vs Iterations",
+             x = "Iterations",
+             y = "RSS") +
+        theme_minimal() +
+        theme(plot.title = element_text(hjust = 0.5)))  # Center the title

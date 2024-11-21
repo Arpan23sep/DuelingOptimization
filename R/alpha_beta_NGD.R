@@ -28,10 +28,10 @@
 #' initial_point <- c(0, 0)
 #' alpha <- 0.1
 #' beta <- 1.0
-#' tolerance <- 1e-4
-#' result <- alpha_beta_NGD(initial_point, alpha, beta, tolerance)
+#' tolerance <- 0.01
+#' result <- alpha_beta_NGD(initial_point, alpha, beta,2, tolerance)
 #' print(result)
-alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance=0.1) {
+alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance=0.1,f) {
 
   # Initialize variables
   x_1 <- initial_point
@@ -47,7 +47,7 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance=0.1) {
                                              sqrt(log(480 * sqrt(beta * d) * (D + eta_1 * t_1) / (sqrt(2) * epsilon_1))))
 
   # Initial descent using Algorithm 1
-  x <- beta_NGD(x_1, eta_1, gamma_1, t_1)
+  x <- beta_NGD(x_1, eta_1, gamma_1, t_1,f)$optimum
 
   # Main loop for each phase
   for (k in 2:phase_count) {
@@ -60,7 +60,7 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance=0.1) {
                                                sqrt(log(480 * sqrt(beta * d) * (1 + eta_k * t_k) / (sqrt(2) * epsilon_k))))
 
     # Update current point using beta_NGD for the current phase
-    x <- beta_NGD(x, eta_k, gamma_k, t_k)
+    x <- beta_NGD(x, eta_k, gamma_k, t_k,f)$optimum
     print(paste0(k / phase_count * 100, "% Done!"))
     # if (norm(x - initial_point, type = "2") < tolerance) break
     print(paste0("Completed ", 100*k/phase_count, "%"))
