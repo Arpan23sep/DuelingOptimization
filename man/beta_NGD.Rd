@@ -4,7 +4,7 @@
 \alias{beta_NGD}
 \title{Normalized Gradient Descent with Preference Feedback}
 \usage{
-beta_NGD(initial_point, eta, gamma, T)
+beta_NGD(initial_point, eta, gamma, T, f)
 }
 \arguments{
 \item{initial_point}{A numeric vector representing the d-dimensional initial point.}
@@ -15,9 +15,14 @@ beta_NGD(initial_point, eta, gamma, T)
 to probe the function's landscape.}
 
 \item{T}{An integer representing the maximum number of steps the algorithm will take.}
+
+\item{f}{A function representing the objective function to be minimized. This function
+must take a numeric vector as input and return a numeric value.}
 }
 \value{
-A numeric vector representing the best point found after \code{T} iterations.
+A list with the following components:
+\item{optimum}{A numeric vector representing the best point found after \code{T} iterations.}
+\item{f_array}{A numeric vector containing the best function value observed at each iteration.}
 }
 \description{
 Implements a normalized gradient descent algorithm based on preference (dueling) feedback.
@@ -25,10 +30,11 @@ The function attempts to find an optimal point in a given space by iteratively u
 the initial point in the direction estimated from comparison feedback.
 }
 \examples{
+f <- function(x) sum(x^2)  # Example quadratic function
 initial_point <- c(1, 1)
 eta <- 0.01
 gamma <- 0.1
 T <- 100
-result <- beta_NGD(initial_point, eta, gamma, T)
+result <- beta_NGD(initial_point, eta, gamma, T,f)
 print(result)
 }

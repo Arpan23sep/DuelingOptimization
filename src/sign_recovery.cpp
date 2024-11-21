@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <cmath>
 using namespace Rcpp;
 
 // Algorithm 3: Sign-Recovery for Noisy Comparison Feedback
@@ -6,7 +7,28 @@ using namespace Rcpp;
 // with high confidence by aggregating noisy feedback from repeated comparisons.
 
 // [[Rcpp::export]]
+int compare_points(NumericVector x1, NumericVector x2) {
+  // Compare the values of f(x1) and f(x2)
+  double f_x1 = sum(pow(x1, 2));  // Quadratic function f(x) = sum(x^2)
+  double f_x2 = sum(pow(x2, 2));  // Quadratic function f(x) = sum(x^2)
+
+  if (f_x1 < f_x2) {
+    return 1;  // Return +1 if f(x1) < f(x2)
+  } else {
+    return -1; // Return -1 otherwise
+  }
+}
+
+// [[Rcpp::export]]
 int signRecovery(NumericVector x, NumericVector y, double delta) {
+  // Validate inputs
+  if (x.size() != y.size()) {
+    stop("Input vectors x and y must have the same size.");
+  }
+  if (delta <= 0) {
+    stop("Delta must be greater than zero.");
+  }
+
   int w = 0;         // Cumulative feedback count
   int t = 0;         // Query counter
   double pt;         // Probability estimate for preference
@@ -14,12 +36,11 @@ int signRecovery(NumericVector x, NumericVector y, double delta) {
   double lt_x_y, lt_y_x;
 
   // Main loop for querying the oracle
-  //Using resampling trick
   while (true) {
     t += 1;
 
-    // try to compare points x & y
-    int ot = Rcpp::as<int>(Rcpp::Function("compare_points")(x, y));
+    // Compare points x & y
+    int ot = compare_points(x, y);
     w += ot;  // Aggregate feedback
 
     // Calculate the probability estimate and confidence bound
@@ -40,4 +61,8 @@ int signRecovery(NumericVector x, NumericVector y, double delta) {
   return (lt_x_y > 0.5) ? 1 : -1;
 }
 
-
+// [[Rcpp::export]]
+double f1_value(NumericVector x) {
+  // Function to calculate the value of f at point x
+  return sum(pow(x, 2));  // Simple quadratic function f(x) = sum(x^2)
+}

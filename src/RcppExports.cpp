@@ -11,20 +11,47 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// timesTwo
-NumericVector timesTwo(NumericVector x);
-RcppExport SEXP _DuelingOptimization_timesTwo(SEXP xSEXP) {
+// compare_points
+int compare_points(NumericVector x1, NumericVector x2);
+RcppExport SEXP _DuelingOptimization_compare_points(SEXP x1SEXP, SEXP x2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x1(x1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x2(x2SEXP);
+    rcpp_result_gen = Rcpp::wrap(compare_points(x1, x2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// signRecovery
+int signRecovery(NumericVector x, NumericVector y, double delta);
+RcppExport SEXP _DuelingOptimization_signRecovery(SEXP xSEXP, SEXP ySEXP, SEXP deltaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    rcpp_result_gen = Rcpp::wrap(signRecovery(x, y, delta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// f1_value
+double f1_value(NumericVector x);
+RcppExport SEXP _DuelingOptimization_f1_value(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(f1_value(x));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_DuelingOptimization_timesTwo", (DL_FUNC) &_DuelingOptimization_timesTwo, 1},
+    {"_DuelingOptimization_compare_points", (DL_FUNC) &_DuelingOptimization_compare_points, 2},
+    {"_DuelingOptimization_signRecovery", (DL_FUNC) &_DuelingOptimization_signRecovery, 3},
+    {"_DuelingOptimization_f1_value", (DL_FUNC) &_DuelingOptimization_f1_value, 1},
     {NULL, NULL, 0}
 };
 

@@ -4,7 +4,7 @@
 \alias{compare_points}
 \title{Compare Points Based on Preference Feedback}
 \usage{
-compare_points(x1, x2)
+compare_points(x1, x2, f)
 }
 \arguments{
 \item{x1}{A numeric vector representing the first point.}
