@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_Normalized_Gradient.R
 \name{compare_points}
 \alias{compare_points}
-\title{Compare Points Based on Preference Feedback}
+\title{Compare Two Points Based on Objective Function}
 \usage{
 compare_points(x1, x2, f)
 }
@@ -10,11 +10,18 @@ compare_points(x1, x2, f)
 \item{x1}{A numeric vector representing the first point.}
 
 \item{x2}{A numeric vector representing the second point.}
+
+\item{f}{The objective function to be minimized. It must take a numeric vector as input and return a numeric value.}
 }
 \value{
 An integer, +1 if \code{f(x1) < f(x2)}, -1 otherwise.
 }
 \description{
-A placeholder function that simulates comparison feedback between two points.
-Returns +1 if \code{f(x1) < f(x2)}, -1 otherwise.
+Compares two points based on the values of a given objective function.
+The function returns +1 if the objective function value at the first point
+is smaller than the value at the second point, and -1 otherwise.
+}
+\examples{
+f <- function(x) sum(x^2)
+compare_points(c(1, 2), c(3, 4), f)
 }

@@ -35,6 +35,7 @@ initial_point <- c(1, 1)
 eta <- 0.01
 gamma <- 0.1
 T <- 100
-result <- beta_NGD(initial_point, eta, gamma, T,f)
+result <- beta_NGD(initial_point, eta, gamma, T, f)
 print(result)
+print(result$f_array)
 }
