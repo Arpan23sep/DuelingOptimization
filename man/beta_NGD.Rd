@@ -30,12 +30,48 @@ The function attempts to find an optimal point in a given space by iteratively u
 the initial point in the direction estimated from comparison feedback.
 }
 \examples{
-f <- function(x) sum(x^2)  # Example quadratic function
-initial_point <- c(1, 1)
-eta <- 0.01
-gamma <- 0.1
-T <- 100
-result <- beta_NGD(initial_point, eta, gamma, T, f)
-print(result)
-print(result$f_array)
+# Set random seed for reproducibility
+set.seed(42)
+
+# Generate synthetic data
+n_samples <- 100
+I <- rep(1, n_samples)                        # Intercept term
+X1 <- runif(n_samples, 0, 1)                  # Feature 1
+X2 <- runif(n_samples, 0, 0.5)                # Feature 2
+X3 <- runif(n_samples, 0, 0.8)                # Feature 3
+X <- cbind(I, X1, X2, X3)
+beta <- c(5, 1, 2, 1)                         # True coefficients
+
+# Response variable with noise
+y <- X \%*\% beta + rnorm(n_samples, mean = 0, sd = 0.4)
+data <- data.frame(X1 = X1, X2 = X2, X3 = X3, y = y)
+
+# Fit a linear regression model
+model <- lm(y ~ ., data = data)
+print(coef(model))
+
+# Define the objective function (Residual Sum of Squares)
+f_value <- function(beta) {
+  sum((y - X \%*\% beta)^2)
+}
+
+# Apply Beta-NGD Optimization
+result <- beta_NGD(c(4, 2, 3, 2), c(0.003,0.007,0.005,0.007), c(0.001,0.002,0.003,0.004), 5000,f_value)
+f_array <- result$f_array
+optimum <- result$optimum
+
+# Plot the RSS over iterations
+library(ggplot2)
+f_data <- data.frame(
+  Index = 0:(length(f_array) - 1),
+  Value = f_array
+)
+ggplot(f_data, aes(x = Index, y = Value)) +
+  geom_line(color = "blue") +          # Line connecting points
+  labs(title = "RSS vs Iterations",
+       x = "Iterations",
+       y = "RSS") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))  # Center the title
+
 }
