@@ -3,6 +3,8 @@
 #' This function serves as a wrapper for the C++ function `signRecovery_c`. It performs
 #' sign recovery by repeatedly comparing two points using the provided objective function.
 #'
+#' @useDynLib DuelingOptimization
+#' @import Rcpp
 #' @param x A numeric vector representing the first point.
 #' @param y A numeric vector representing the second point.
 #' @param delta A positive numeric value specifying the confidence parameter.
