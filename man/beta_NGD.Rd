@@ -56,7 +56,14 @@ f_value <- function(beta) {
 }
 
 # Apply Beta-NGD Optimization
-result <- beta_NGD(c(4, 2, 3, 2), c(0.003,0.007,0.005,0.007), c(0.001,0.002,0.003,0.004), 5000,f_value)
+result <- beta_NGD(
+ c(4, 2, 3, 2),
+ c(0.003, 0.007, 0.005, 0.007),
+ c(0.001, 0.002, 0.003, 0.004),
+ 5000,
+ f_value
+)
+
 f_array <- result$f_array
 optimum <- result$optimum
 

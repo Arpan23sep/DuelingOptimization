@@ -14,6 +14,7 @@
 #' @return A list with the following components:
 #'   \item{optimum}{A numeric vector representing the best point found after `T` iterations.}
 #'   \item{f_array}{A numeric vector containing the best function value observed at each iteration.}
+#' @import ggplot2
 #' @export
 #'
 #' @examples
@@ -43,7 +44,14 @@
 #' }
 #'
 #' # Apply Beta-NGD Optimization
-#' result <- beta_NGD(c(4, 2, 3, 2), c(0.003,0.007,0.005,0.007), c(0.001,0.002,0.003,0.004), 5000,f_value)
+#' result <- beta_NGD(
+#'  c(4, 2, 3, 2),
+#'  c(0.003, 0.007, 0.005, 0.007),
+#'  c(0.001, 0.002, 0.003, 0.004),
+#'  5000,
+#'  f_value
+#' )
+#'
 #' f_array <- result$f_array
 #' optimum <- result$optimum
 #'
