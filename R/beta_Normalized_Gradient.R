@@ -209,10 +209,7 @@ beta_NGD_optimum <- function(initial_point, D, eigen_max, epsilon = 0.1, f) {
 #' @param x2 A numeric vector representing the second point.
 #' @param f The objective function to be minimized. It must take a numeric vector as input and return a numeric value.
 #' @return An integer, +1 if \code{f(x1) < f(x2)}, -1 otherwise.
-#' @examples
-#' f <- function(x) sum(x^2)
-#' compare_points(c(1, 2), c(3, 4), f)
-#' @export
+#' @keywords internal
 compare_points <- function(x1, x2, f) {
   if (f(x1) < f(x2)) return(1)
   else return(-1)

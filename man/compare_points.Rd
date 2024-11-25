@@ -21,7 +21,4 @@ Compares two points based on the values of a given objective function.
 The function returns +1 if the objective function value at the first point
 is smaller than the value at the second point, and -1 otherwise.
 }
-\examples{
-f <- function(x) sum(x^2)
-compare_points(c(1, 2), c(3, 4), f)
-}
+\keyword{internal}
