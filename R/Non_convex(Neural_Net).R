@@ -1,0 +1,119 @@
+#' Neural Network Optimization with Sigmoid Activation
+#'
+#' This function optimizes a two-layer neural network with sigmoid activation using
+#' normalized gradient descent. The weights of the neural network are flattened for optimization
+#' and converted back to their original structure after optimization.
+#'
+#' @param initial_weights A list containing the initial weights and biases of the neural network:
+#'   \itemize{
+#'     \item \code{W1}: A matrix of dimensions \code{n_features x n_hidden} representing input to hidden layer weights.
+#'     \item \code{b1}: A vector of size \code{n_hidden} representing biases for the hidden layer.
+#'     \item \code{W2}: A matrix of dimensions \code{n_hidden x n_output} representing hidden to output layer weights.
+#'     \item \code{b2}: A scalar representing the bias for the output layer.
+#'   }
+#' @param X A numeric matrix of size \code{n_samples x n_features} representing input features.
+#' @param y A numeric vector of size \code{n_samples} representing the response variable.
+#' @param eta A numeric value representing the learning rate.
+#' @param gamma A numeric value representing the perturbation parameter.
+#' @param T An integer representing the maximum number of iterations for optimization.
+#'
+#' @return A list containing:
+#'   \itemize{
+#'     \item \code{weights}: A list of optimized weights and biases structured as the input \code{initial_weights}.
+#'     \item \code{loss_array}: A numeric vector containing the loss values over iterations.
+#'   }
+#' @export
+#'
+#' @examples
+#' set.seed(42)
+#'
+#' # Generate synthetic data
+#' n_samples <- 100
+#' n_features <- 5
+#' n_hidden <- 10
+#'
+#' X <- matrix(rnorm(n_samples * n_features), n_samples, n_features)
+#' true_weights <- list(
+#'   W1 = matrix(runif(n_features * n_hidden), n_features, n_hidden),
+#'   b1 = runif(n_hidden),
+#'   W2 = matrix(runif(n_hidden), n_hidden, 1),
+#'   b2 = runif(1)
+#' )
+#' hidden_layer <- 1 / (1 + exp(-(X %*% true_weights$W1 + true_weights$b1)))
+#' output_layer <- hidden_layer %*% true_weights$W2 + true_weights$b2
+#' y <- rowSums(output_layer)
+#'
+#' # Initialize neural network weights
+#' initial_weights <- list(
+#'   W1 = matrix(rnorm(n_features * n_hidden), n_features, n_hidden),
+#'   b1 = rep(0, n_hidden),
+#'   W2 = matrix(rnorm(n_hidden), n_hidden, 1),
+#'   b2 = 0
+#' )
+#'
+#' # Set optimization parameters
+#' eta <- 0.01
+#' gamma <- 0.1
+#' T <- 10000
+#'
+#' # Run optimization
+#' result <- NN_optimization(
+#'   initial_weights = initial_weights,
+#'   X = X,
+#'   y = y,
+#'   eta = eta,
+#'   gamma = gamma,
+#'   T = T
+#' )
+#'
+#' # Plot the loss over iterations
+#' plot(
+#'  result$loss_array, type = "l",
+#'  main = "Loss Over Iterations",
+#'  xlab = "Iterations", ylab = "Loss"
+#' )
+
+NN_optimization <- function(initial_weights, X, y, eta, gamma, T) {
+  # Flatten the weights into a single vector for optimization
+  flatten_weights <- function(weights) {
+    c(as.vector(weights$W1), weights$b1, as.vector(weights$W2), weights$b2)
+  }
+
+  # Convert a flat vector back to a weights list
+  unflatten_weights <- function(flat_weights, n_features, n_hidden, n_output) {
+    W1 <- matrix(flat_weights[1:(n_features * n_hidden)], n_features, n_hidden)
+    b1 <- flat_weights[(n_features * n_hidden + 1):(n_features * n_hidden + n_hidden)]
+    W2 <- matrix(flat_weights[(n_features * n_hidden + n_hidden + 1):(n_features * n_hidden + n_hidden + n_hidden * n_output)], n_hidden, n_output)
+    b2 <- flat_weights[length(flat_weights)]
+    list(W1 = W1, b1 = b1, W2 = W2, b2 = b2)
+  }
+
+  # Define the loss function
+  loss_fn <- function(flat_weights) {
+    weights <- unflatten_weights(flat_weights, n_features = ncol(X), n_hidden = ncol(initial_weights$W1), n_output = 1)
+
+    # Forward pass: Input to hidden layer
+    H <- 1 / (1 + exp(-(X %*% weights$W1 + matrix(weights$b1, nrow = nrow(X), ncol = ncol(weights$W1), byrow = TRUE))))  # Sigmoid activation
+
+    # Hidden layer to output
+    predictions <- H %*% weights$W2 + weights$b2
+
+    # Mean squared error
+    mean((predictions - y)^2)
+  }
+
+  # Perform normalized gradient descent using the defined loss function
+  initial_point <- flatten_weights(initial_weights)
+  result <- beta_NGD(
+    initial_point = initial_point,
+    eta = eta,
+    gamma = gamma,
+    T = T,
+    f = loss_fn
+  )
+
+  # Convert optimized weights back into the neural network structure
+  optimized_weights <- unflatten_weights(result$optimum, n_features = ncol(X), n_hidden = ncol(initial_weights$W1), n_output = 1)
+
+  return(list(weights = optimized_weights, loss_array = result$f_array))
+}
