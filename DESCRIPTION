@@ -8,6 +8,7 @@ Description: The goal is to find the optimal point with the least possible query
 License: GPL (>= 3)
 Encoding: UTF-8
 Imports: 
+    ggplot2,
     Rcpp (>= 1.0.5),
     stats
 LinkingTo: Rcpp, RcppArmadillo
