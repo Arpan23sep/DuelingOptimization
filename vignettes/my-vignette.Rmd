@@ -28,7 +28,11 @@ This package includes two primary functions:
 
 beta_Normalized_Gradient: Implements a normalized gradient descent algorithm for general β-smooth convex functions using binary feedback. alpha_beta_NGD: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence. The core of these algorithms lies in estimating gradient directions based on noisy, preference-based comparisons. This enables optimization in scenarios where only binary feedback is available for queried pairs of points.
 
-Mathamatical problem:
+Mathamatical problem: This work addresses the challenge of **convex optimization with preference (dueling) feedback**, where the learner only observes noisy binary feedback (win-loss) comparing pairs of queried points based on their function values. Unlike traditional optimization, this setting lacks even zeroth-order feedback, making it particularly relevant in real-world applications like recommender systems or customer preference learning, where only binary preference data is available.
+
+The focus is on **online convex optimization (OCO)**, aiming to find a near-optimal point with minimal query complexity by actively querying noisy {0, 1} comparisons between decision point pairs. The study proves an impossibility result for the **non-stationary OCO setting**, where the convex function changes over time, showing that achieving this objective is not feasible in such scenarios.
+
+For the **stationary OCO problem**, where the function remains constant, the authors propose a **normalized gradient descent algorithm** to find an ϵ\epsilonϵ-optimal point. Key contributions include:
 
 Objective:
 
