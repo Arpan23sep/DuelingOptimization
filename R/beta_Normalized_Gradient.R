@@ -9,7 +9,7 @@
 #' @param gamma A numeric value representing the perturbation parameter, used to generate nearby points
 #'   to probe the function's landscape.
 #' @param T An integer representing the maximum number of steps the algorithm will take.
-#' @param f A function representing the objective function to be minimized. This function
+#' @param f A convex function representing the objective function to be minimized. This function
 #'   must take a numeric vector as input and return a numeric value.
 #' @return A list with the following components:
 #'   \item{optimum}{A numeric vector representing the best point found after `T` iterations.}
@@ -38,7 +38,7 @@
 #' model <- lm(y ~ ., data = data)
 #' print(coef(model))
 #'
-#' # Define the objective function (Residual Sum of Squares)
+#' # Define the objective function (Residual/error Sum of Squares)
 #' f_value <- function(beta) {
 #'   sum((y - X %*% beta)^2)
 #' }
@@ -70,6 +70,15 @@
 #'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 #'
 beta_NGD <- function(initial_point, eta, gamma, T, f) {
+  if (length(initial_point) != length(gamma) || length(initial_point) != length(eta)) {
+    stop("Dimension does not match: stop!")
+  }
+  if (T <= 0) {
+    stop("T must be positive")
+  }
+  if (!is.function(f)) {
+    stop("f must be a valid R function.")
+  }
   # Initialize variables
   x <- initial_point
   f_array <- c()
@@ -86,7 +95,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
     x_plus <- x + gamma * u
     x_minus <- x - gamma * u
 
-    # Simulate comparison feedback
+    # comparison feedback
     feedback <- compare_points(x_plus, x_minus, f)
 
     # Estimate the gradient direction
@@ -102,7 +111,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
       x_best <- x
     }
 
-    # Record the best function value
+    # Record the best function values observed at each iteration
     f_array <- c(f_array, f_best)
   }
 
