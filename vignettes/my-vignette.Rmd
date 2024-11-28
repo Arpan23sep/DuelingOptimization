@@ -249,4 +249,11 @@ The primary objective is to minimize the loss function \( L(w) \) using only the
 
 This setting is particularly relevant in applications where direct gradient or loss value information is unavailable, and only comparative preferences can be observed.
 
+Conclusion:
+We observed that our originial two cases are now limited only to simple convex function.It can be seen from the plots that the algoithms are performing pretty well for non-convex case.
+Reference:
+If you use this package in your research, please cite the original paper:
+
+Saha, A., Koren, T., & Mansour, Y. (2021). Dueling Convex Optimization. Proceedings of the 38th International Conference on Machine Learning.
+
 
