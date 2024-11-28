@@ -1,10 +1,19 @@
 ---
 title: "my-vignette"
-output: rmarkdown::html_vignette
+#output: rmarkdown::html_vignette
+output:
+  pdf_document: default
+  number_sections: true
+  latex_engine: pdflatex
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{algorithm}
+  - \usepackage{algorithmic}  
 ---
 
 ```{r, include = FALSE}
@@ -22,7 +31,7 @@ library(DuelingOptimization)
 
 DuelingOptimization is an R package that implements algorithms for convex optimization with preference-based (dueling) feedback, based on the paper "Dueling Convex Optimization" by Saha et al. This package provides tools for performing convex optimization using only noisy binary feedback on pairs of decision points, as opposed to direct gradient or function value information. The algorithms are suitable for applications like recommender systems, ranking, and online learning, where preference feedback is commonly available.
 
-#### Overview 
+#### Overview
 
 This package includes two primary functions:
 
@@ -34,44 +43,210 @@ The focus is on **online convex optimization (OCO)**, aiming to find a near-opti
 
 For the **stationary OCO problem**, where the function remains constant, the authors propose a **normalized gradient descent algorithm** to find an ϵ\epsilonϵ-optimal point. Key contributions include:
 
-Objective:
+Objective:--- title: "Objective" output: html_document ---
 
-Noiseless Case: Normalized-Gradient Descent
+### Objective
 
-F is beta smooth:
+The objective of this R package is to address the standard $(\epsilon, \delta)$-probably approximately correct (PAC) function optimization problem. Specifically, given any fixed $\epsilon, \delta \in (0, 1)$, the goal is to find a decision point $x \in \mathbb{R}^d$ with the minimum possible pairwise-query complexity $\{(x_t, y_t)\}_{t=1}^T$ such that the final point $x$ satisfies:
 
-Algorithm:
+$$
+\Pr\left(\bar{f}(x) - \bar{f}(x^*) < \epsilon\right) \geq 1 - \delta,
+$$
 
-Convergence Guarantee:
+where
+
+$$
+\bar{f}(x) := \frac{1}{T} \sum_{t=1}^T \mathbb{E}_{f_t \sim P}[f_t(x)],
+$$
+
+for all $x \in \mathbb{R}^d$, represents the average function value, and
+
+$$
+x^* := \arg \min_{z \in \mathbb{R}^d} \bar{f}(z)
+$$
+
+denotes the global minimizer of $\bar{f}$.
+
+This package provides efficient algorithms to achieve this objective by leveraging dueling feedback (pairwise comparisons) and iterative optimization techniques.
+
+Noiseless Case: Normalized-Gradient Descent: Here we will anlyses the case of "no-noise" i.e upon querying any duel (x,y) the learner gets access to its true sign feedback $$ 1 (f(x) \geq f(y))$$.Let us first look of our main algorithm for $$\beta$$ smooth convex optimization which is based on techniqu eof normalized gradient descent.
+
+F is beta smooth: A differentiable function $f: \mathbb{R}^d \to \mathbb{R}$ is said to be beta-smooth (or $\beta$-smooth, where $\beta > 0$) if its gradient $\nabla f(x)$ is Lipschitz continuous. Mathematically, this means there exists a constant $\beta > 0$ such that for all $x, y \in \mathbb{R}^d$: $$
+\|\nabla f(x) - \nabla f(y)\|_2 \leq \beta \|x - y\|_2.
+$$
+
+Algorithm: {=latex}
+
+```         
+\begin{algorithm}[H]
+\caption{$\beta$-NGD($\mathbf{x}_1, \eta, \gamma, T_\epsilon$)}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Initial point $\mathbf{x}_1 \in \mathbb{R}^d$, learning rate $\eta$, perturbation parameter $\gamma$, query budget $T_\epsilon$.
+\STATE \textbf{Initialize:} $\tilde{\mathbf{x}}_1 = \mathbf{x}_1$.
+\FOR{$t = 1, 2, \dots, T_\epsilon$}
+    \STATE Sample $\mathbf{u}_t \sim \text{Unif}(\mathbb{S}_d(1))$.
+    \STATE Compute perturbed points: $\mathbf{x}_t' = \mathbf{x}_t + \gamma \mathbf{u}_t$ and $\mathbf{y}_t' = \mathbf{x}_t - \gamma \mathbf{u}_t$.
+    \STATE Receive binary feedback $o_t = \mathbb{1}(f(\mathbf{x}_t') < f(\mathbf{y}_t'))$.
+    \STATE Compute the gradient estimate: $\mathbf{h}_t = (2o_t - 1)\mathbf{u}_t$.
+    \STATE Update $\mathbf{x}_{t+1} = \mathbf{x}_t - \eta \mathbf{h}_t$.
+    \STATE Update $\tilde{\mathbf{x}}_{t+1} = 
+      \begin{cases} 
+        \mathbf{x}_{t+1}, & \text{if } o_t = -1, \\
+        \tilde{\mathbf{x}}_t, & \text{otherwise.}
+      \end{cases}$
+\ENDFOR
+\STATE \textbf{Return:} $\tilde{\mathbf{x}}_{T_\epsilon}$.
+\end{algorithmic}
+\end{algorithm}
+```
+
+Convergence Guarantee: This theorem ensures that our algorithm will converge. Suppose Algorithm 1 is run with $$
+\eta = \frac{\sqrt{\epsilon}}{20\sqrt{d\beta}}, \quad 
+\gamma = \frac{(\epsilon/\beta)^{3/2}}{240\sqrt{2}d(D + \eta T)^2\sqrt{\log \frac{480\sqrt{\beta}d(D + \eta T)}{\sqrt{2}\epsilon}}}, \quad 
+\text{and} \quad T_\epsilon = O\left(\frac{d\beta D}{\epsilon}\right),
+$$ where $D \geq \|\mathbf{x}_1 - \mathbf{x}^*\|_2$ (an assumed known upper bound).
+
+Then Algorithm 1 returns $$
+\mathbb{E}[f(\tilde{\mathbf{x}}_{T+1})] - f(\mathbf{x}^*) \leq \epsilon
+$$ with sample complexity $2T_\epsilon$.
 
 Example1: Logistic Regression
+We run our logistic regression algorithm on the above explained case and get.
+
 
 Beta_NGD optimum:
+This algorithm starts with some fixed initial values based on our function and theoritical result ensures that this algorithm will converge much faster than our previous random initialsation function.
+### Convergence for α-Strongly Convex and β-Smooth Functions
+
+We demonstrate an improved convergence rate for functions that are both **α-strongly convex** and **β-smooth**. In this scenario, we leverage **Algorithm 1 (β-NGD)**, which is optimal for β-smooth convex functions, as a black-box subroutine to develop an efficient algorithm for this specialized setting.
+
+Our proposed method, **(α, β)-NGD** (Algorithm 2), follows a **phase-wise iterative optimization** approach. Within each phase, Algorithm 1 is employed as a black box to identify an \( \epsilon_k \)-optimal point, where \( \epsilon_k \) decreases exponentially across phases (starting with \( \epsilon_1 = 1 \)). The optimization process for the \( (k+1) \)-th phase is **warm-started** using the optimizer returned by the previous phase. 
+
+This iterative framework ensures faster convergence by combining the strong convexity property of the objective function with the efficient gradient descent method for β-smooth functions, making it suitable for scenarios requiring both precision and efficiency.
+
 
 Example2:Linear Regression
+As the objective function of Linear Regression is $$\alpha$$ strongly convex so we can use our algorithm for this. We will run our algoithm on this.
 
 Example 3: Dimension Effects Plot
+We will chnage our dimension and see effects of our plots. Here is the plot for $$d=2,3,4,5$$
 
 F is alpha strongly convex & beta smooth:
 
 Algorithm:
 
 Convergence Guarnatee:
+### Convergence for α-Strongly Convex and β-Smooth Functions
+
+Consider \(f\) to be **α-strongly convex** and **β-smooth**. Using Algorithm 2 (\((\alpha, \beta)\)-NGD), we achieve an improved convergence rate. Specifically, Algorithm 2 ensures:
+
+\[
+\mathbb{E}[f(\tilde{x})] - f(x^*) \leq \epsilon,
+\]
+
+with a sample complexity (number of pairwise comparisons) of:
+
+\[
+O\left(d\frac{\beta}{\alpha}\left(\log_2\frac{\alpha}{\epsilon} + \|x_1 - x^*\|^2\right)\right),
+\]
+
+where:
+- \(d\): Dimension of the problem,
+- \(\beta\): Smoothness constant,
+- \(\alpha\): Strong convexity constant,
+- \(\epsilon\): Desired optimization accuracy,
+- \(\|x_1 - x^*\|^2\): Squared distance between the initial point \(x_1\) and the optimal point \(x^*\).
+
+This result demonstrates that the \((\alpha, \beta)\)-NGD algorithm leverages the strong convexity property to significantly reduce the number of pairwise comparisons required for achieving a given level of accuracy.
+
 
 General Case:Noisy sign feedback
+### Handling Noisy Comparison Feedback
+
+In many real-world scenarios, comparison feedback may be noisy. Specifically, the oracle provides feedback such that:
+
+$$
+P(o_t = 1 \mid f_t(y_t) > f_t(x_t)) = \frac{1}{2} + \nu,
+$$
+
+for some $\nu \in (0, 0.5]$. 
+
+The algorithms proposed earlier rely on access to the true sign feedback:
+
+$$
+o_t = 1(f(x_t) > f(y_t)),
+$$
+
+for every pairwise query $(x_t, y_t)$. However, noisy feedback may introduce incorrect signs where the oracle fails.
+
+### Resampling Trick
+
+To address this issue, we introduce a 'resampling-trick'. This approach effectively mitigates the impact of noise in the feedback by ensuring more reliable comparisons through repeated queries. The algorithm performs multiple resamples for each pairwise query and aggregates the feedback to estimate the true sign, reducing the impact of incorrect comparisons caused by noise.
+
 
 Sign_recovery:
+We use our this sign_recovery function for this.
 
 Algorithm:
 
 Our Extension:
-
+Now, we have made some of our extension. firstly we will show for the class of functions which satisfy the famous PL inequality.
 PL inequality Case:
+## Polyak-Łojasiewicz (PL) Inequality
+
+A function \( f \) satisfies the **Polyak-Łojasiewicz (PL) inequality** if there exists a positive constant \( \mu > 0 \) such that:
+
+\[
+\frac{1}{2} \|\nabla f(x)\|_2^2 \geq \mu \left( f(x) - f(x^*) \right), \quad \forall x \in \mathbb{R}^d,
+\]
+
+where:
+
+- \( \nabla f(x) \) is the gradient of \( f \) at \( x \),
+- \( f(x^*) \) is the minimum value of \( f(x) \) over \( \mathbb{R}^d \),
+- \( \mu \) is referred to as the **PL constant**.
+
+The PL inequality is less restrictive than strong convexity and applies to a broader class of functions. It guarantees that gradient-based optimization methods converge to the minimum value under this condition. This makes it a valuable property for analyzing optimization algorithms.
 
 General Non_Convex Setup:
-
+Now we will go for the general non-convex setup. First thing that comes to our mind most general setup is Neural Network.
 Neural Network Optimization:
+I will use a simple two layered neural network.
+### Wide 2-Layer Neural Network with Preference-Based Feedback
 
-Conclusion:
+Consider a wide 2-layer neural network defined as \( y = f_\theta(x) \), where \( \theta \) is the set of weights. The network uses either sigmoid or ReLU activation functions. The output \( y \) of this network represents the preference or reward for the input \( x \), which could be, for example, a response generated by a large language model (LLM). 
 
-Reference:
+### Hidden Loss Function
+
+The underlying loss function is defined as:
+
+\[
+L(w) = \mathbb{E}_x \left[ (g(w; x) - y)^2 \right]
+\]
+
+This loss function is unknown to both the user and the learner. The learner (LLM) does not have direct access to \( L(w) \) or \( f_\theta(x) \). Instead, the user provides feedback in the form of **dueling preferences**, defined as:
+
+\[
+1(L(w_1) > L(w_2))
+\]
+
+This binary feedback indicates whether the user prefers the response generated by weights \( w_1 \) over \( w_2 \) on average.
+
+### Noiseless vs. Noisy Feedback
+
+- **Noiseless Feedback**: For simplicity, we initially consider the noiseless case, where the user provides accurate comparisons between \( L(w_1) \) and \( L(w_2) \).
+- **Noisy Feedback**: In more realistic scenarios, the feedback is based on specific input samples \( x \), introducing noise. For such cases, the feedback takes the form:
+
+\[
+1(L(w_1, x) > L(w_2, x))
+\]
+
+Here, the preference is determined based on \( x \) instead of the expected loss.
+
+### Goal
+
+The primary objective is to minimize the loss function \( L(w) \) using only the dueling feedback provided by the user. The learner iteratively updates the weights \( w \) based on preference feedback to converge toward an optimal set of weights.
+
+This setting is particularly relevant in applications where direct gradient or loss value information is unavailable, and only comparative preferences can be observed.
+
+
