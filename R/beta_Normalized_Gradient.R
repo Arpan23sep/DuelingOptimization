@@ -70,11 +70,8 @@
 #'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 #'
 beta_NGD <- function(initial_point, eta, gamma, T, f) {
-  if (length(initial_point) != length(gamma) || length(initial_point) != length(eta)) {
-    stop("Dimension does not match: stop!")
-  }
-  if (T <= 0) {
-    stop("T must be positive")
+  if (!is.numeric(T) || T <= 0) {
+    stop("T must be a positive integer.")
   }
   if (!is.function(f)) {
     stop("f must be a valid R function.")
@@ -127,7 +124,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' @param initial_point A numeric vector representing the d-dimensional initial point.
 #' @param D A numeric value representing the diameter of the search space.
 #' @param eigen_max A numeric value representing the maximum eigenvalue of the Hessian (smoothness parameter).
-#' @param epsilon A numeric value representing the desired optimization accuracy.
+#' @param epsilon A numeric value representing the desired optimization accuracy.(Default, epsilon = 0.01)
 #' @param f A function representing the objective function to be minimized. This function
 #'   must take a numeric vector as input and return a numeric value.
 #' @return A list with the following components:
@@ -150,7 +147,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' prob <- 1 / (1 + exp(-X %*% true_beta))
 #' y <- rbinom(n, 1, prob)  # Binary labels
 #'
-#' # Define the logistic loss function as the objective
+#' # Define the logistic loss function as the objective function
 #' f_value <- function(beta) {
 #'   linear_comb <- X %*% beta
 #'   loss <- -mean(y * log(1 / (1 + exp(-linear_comb))) +
@@ -165,7 +162,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' eigenvalues <- eigen(Hessian)$values
 #' eigen_max <- 0.25 * max(eigenvalues)
 #'
-#' # Run the beta_NGD function
+#' # Run the beta_NGD_optimum function
 #' result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
 #' point <- result$optimum
 #' f_array <- result$f_array
@@ -174,8 +171,6 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #'
 #' # Compare with logistic regression solution from glm for verification
 #' glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
-#' print("True beta:")
-#' print(true_beta)
 #' print("GLM estimated beta:")
 #' print(coef(glm_fit))
 #'
@@ -196,6 +191,22 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 
 beta_NGD_optimum <- function(initial_point, D, eigen_max, epsilon = 0.1, f) {
+  #Input check
+  if (!is.numeric(initial_point) || length(initial_point) == 0) {
+    stop("initial_point must be a non-empty numeric vector.")
+  }
+  if (!is.numeric(D) || D <= 0) {
+    stop("D must be a positive numeric value.")
+  }
+  if (!is.numeric(eigen_max) || eigen_max <= 0) {
+    stop("eigen_max must be a positive numeric value.")
+  }
+  if (!is.numeric(epsilon) || epsilon <= 0) {
+    stop("epsilon must be a positive numeric value.")
+  }
+  if (!is.function(f)) {
+    stop("f must be a valid R function.")
+  }
   # Compute parameters for the first phase
   d <- length(initial_point)
   beta <- eigen_max
@@ -220,6 +231,21 @@ beta_NGD_optimum <- function(initial_point, D, eigen_max, epsilon = 0.1, f) {
 #' @return An integer, +1 if \code{f(x1) < f(x2)}, -1 otherwise.
 #' @keywords internal
 compare_points <- function(x1, x2, f) {
+  # Check if x1 and x2 are numeric vectors
+  if (!is.numeric(x1) || !is.numeric(x2)) {
+    stop("x1 and x2 must be numeric vectors.")
+  }
+
+  # Check if x1 and x2 have the same length
+  if (length(x1) != length(x2)) {
+    stop("x1 and x2 must have the same length.")
+  }
+
+  # Check if f is a valid function
+  if (!is.function(f)) {
+    stop("f must be a valid R function.")
+  }
+  # Perform the comparison
   if (f(x1) < f(x2)) return(1)
   else return(-1)
 }
