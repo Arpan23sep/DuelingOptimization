@@ -17,7 +17,7 @@ alpha_beta_NGD(initial_point, alpha, beta, D, tolerance = 0.1, f)
 
 \item{tolerance}{A numeric value representing the desired accuracy for convergence. Default is 0.1.}
 
-\item{f}{A function representing the objective function to be minimized. This function
+\item{f}{A convex function representing the objective function to be minimized. This function
 must take a numeric vector as input and return a numeric value.}
 }
 \value{
@@ -45,10 +45,10 @@ and smoothness conditions for accurate results.
 f <- function(x) sum(x^2)  # Example quadratic function
 
 # Set parameters
-initial_point <- c(0, 0)
+initial_point <- c(1, 1)
 alpha <- 0.1
 beta <- 1.0
-D <- 2
+D <- 3
 tolerance <- 0.01
 
 # Run the algorithm

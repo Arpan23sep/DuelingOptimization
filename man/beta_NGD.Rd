@@ -16,7 +16,7 @@ to probe the function's landscape.}
 
 \item{T}{An integer representing the maximum number of steps the algorithm will take.}
 
-\item{f}{A function representing the objective function to be minimized. This function
+\item{f}{A convex function representing the objective function to be minimized. This function
 must take a numeric vector as input and return a numeric value.}
 }
 \value{
@@ -50,7 +50,7 @@ data <- data.frame(X1 = X1, X2 = X2, X3 = X3, y = y)
 model <- lm(y ~ ., data = data)
 print(coef(model))
 
-# Define the objective function (Residual Sum of Squares)
+# Define the objective function (Residual/error Sum of Squares)
 f_value <- function(beta) {
   sum((y - X \%*\% beta)^2)
 }
