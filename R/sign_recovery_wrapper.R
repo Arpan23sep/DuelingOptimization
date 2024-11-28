@@ -22,6 +22,10 @@ signRecovery <- function(x, y, delta, f) {
   if (!is.numeric(x) || !is.numeric(y)) {
     stop("Both x and y must be numeric vectors.")
   }
+  # Check if x and y have the same length
+  if (length(x) != length(y)) {
+    stop("x and y must have the same length.")
+  }
   if (!is.function(f)) {
     stop("f must be a valid R function.")
   }

@@ -9,7 +9,7 @@
 #' @param beta A numeric value representing the smoothness parameter (\eqn{β}).
 #' @param D A numeric value representing the diameter of the search space.
 #' @param tolerance A numeric value representing the desired accuracy for convergence. Default is 0.1.
-#' @param f A function representing the objective function to be minimized. This function
+#' @param f A convex function representing the objective function to be minimized. This function
 #'   must take a numeric vector as input and return a numeric value.
 #' @return A numeric vector representing the approximate optimal point after performing
 #'         multiple phases of gradient descent. The returned point reduces the initial
@@ -31,17 +31,25 @@
 #' f <- function(x) sum(x^2)  # Example quadratic function
 #'
 #' # Set parameters
-#' initial_point <- c(0, 0)
+#' initial_point <- c(1, 1)
 #' alpha <- 0.1
 #' beta <- 1.0
-#' D <- 2
+#' D <- 3
 #' tolerance <- 0.01
 #'
 #' # Run the algorithm
 #' result <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)
 #' print(result)
 alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance = 0.1, f) {
-
+  if (!is.function(f)) {
+    stop("f must be a valid R function.")
+  }
+  if (!is.numeric(D) || D <= 0) {
+    stop("D must be a positive numeric value.")
+  }
+  if (!is.numeric(tolerance) || tolerance <= 0) {
+    stop("tolerance must be a positive numeric value.")
+  }
   # Initialize variables
   x_1 <- initial_point
   d <- length(x_1)
