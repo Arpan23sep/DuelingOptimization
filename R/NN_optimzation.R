@@ -1,4 +1,4 @@
-#' Neural Network Optimization with Sigmoid Activation
+#' Neural Network Optimization with Sigmoid activation
 #'
 #' This function optimizes a two-layer neural network with sigmoid activation using
 #' normalized gradient descent. The weights of the neural network are flattened for optimization
@@ -74,6 +74,55 @@
 #' )
 
 NN_optimization <- function(initial_weights, X, y, eta, gamma, T) {
+  # Input checks
+  if (!is.list(initial_weights)) {
+    stop("initial_weights must be a list.")
+  }
+
+  if (!is.matrix(initial_weights$W1) || !is.numeric(initial_weights$W1)) {
+    stop("initial_weights$W1 must be a numeric matrix.")
+  }
+
+  if (!is.numeric(initial_weights$b1) || length(initial_weights$b1) != ncol(initial_weights$W1)) {
+    stop("initial_weights$b1 must be a numeric vector of length equal to the number of columns in W1.")
+  }
+
+  if (!is.matrix(initial_weights$W2) || !is.numeric(initial_weights$W2)) {
+    stop("initial_weights$W2 must be a numeric matrix.")
+  }
+
+  if (nrow(initial_weights$W2) != ncol(initial_weights$W1)) {
+    stop("The number of rows in W2 must match the number of columns in W1.")
+  }
+
+  if (!is.numeric(initial_weights$b2) || length(initial_weights$b2) != 1) {
+    stop("initial_weights$b2 must be a numeric scalar.")
+  }
+
+  if (!is.matrix(X) || !is.numeric(X)) {
+    stop("X must be a numeric matrix.")
+  }
+
+  if (ncol(X) != nrow(initial_weights$W1)) {
+    stop("The number of columns in X must match the number of rows in W1.")
+  }
+
+  if (!is.numeric(y) || length(y) != nrow(X)) {
+    stop("y must be a numeric vector with a length equal to the number of rows in X.")
+  }
+
+  if (!is.numeric(eta) || eta <= 0) {
+    stop("eta must be a positive numeric value.")
+  }
+
+  if (!is.numeric(gamma) || gamma <= 0) {
+    stop("gamma must be a positive numeric value.")
+  }
+
+  if (!is.numeric(T) || T <= 0 || T != as.integer(T)) {
+    stop("T must be a positive integer.")
+  }
+
   # Flatten the weights into a single vector for optimization
   flatten_weights <- function(weights) {
     c(as.vector(weights$W1), weights$b1, as.vector(weights$W2), weights$b2)
@@ -98,7 +147,7 @@ NN_optimization <- function(initial_weights, X, y, eta, gamma, T) {
     # Hidden layer to output
     predictions <- H %*% weights$W2 + weights$b2
 
-    # Mean squared error
+    #Calculating Mean squared error
     mean((predictions - y)^2)
   }
 
