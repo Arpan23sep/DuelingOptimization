@@ -6,7 +6,7 @@ test_that("NN_optimization returns a list with valid weights and loss array", {
     W1 = matrix(rnorm(20), 5, 4),
     b1 = rep(0, 4),
     W2 = matrix(rnorm(8), 4, 2),
-    b2 = rep(0, 2)
+    b2 = 0
   )
   X <- matrix(rnorm(50), 10, 5)
   y <- rnorm(10)
