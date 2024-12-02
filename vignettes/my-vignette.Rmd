@@ -1,10 +1,6 @@
 ---
 title: "Learning from Comparisons: A Journey Through DuelingOptimization"
 output: rmarkdown::html_vignette
-#output:
-#  pdf_document: default
-#  number_sections: true
-#  latex_engine: pdflatex
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -41,43 +37,47 @@ gradient or function value information. The algorithms are suitable for
 applications like recommender systems, ranking, and online learning,
 where preference feedback is commonly available.
 
-#### Overview
+### Overview
 
-This package includes two primary functions:
+This package includes four primary functions:
 
-beta_Normalized_Gradient: Implements a normalized gradient descent
-algorithm for general β-smooth convex functions using binary feedback.
+beta_NGD: Implements a normalized gradient descent algorithm for general
+β-smooth convex functions using binary feedback.
+
+beta_NGD_optimum: Computes the parameters for normalized gradient
+descent based on the strong convexity and smoothness properties of the
+objective function.
+
 alpha_beta_NGD: Extends the gradient descent to strongly convex and
-β-smooth functions, achieving faster convergence. The core of these
-algorithms lies in estimating gradient directions based on noisy,
-preference-based comparisons. This enables optimization in scenarios
-where only binary feedback is available for queried pairs of points.
+β-smooth functions, achieving faster convergence.
 
-Mathamatical problem: This work addresses the challenge of **convex
-optimization with preference (dueling) feedback**, where the learner
-only observes noisy binary feedback (win-loss) comparing pairs of
-queried points based on their function values. Unlike traditional
-optimization, this setting lacks even zeroth-order feedback, making it
-particularly relevant in real-world applications like recommender
-systems or customer preference learning, where only binary preference
-data is available.
+signRecovery: It performs sign recovery by repeatedly
+comparing(resampling) two points using the provided objective function. The original function is written in RCPP.
+
+### Mathamatical problem:
+
+This work addresses the challenge of convex optimization with
+preference (dueling) feedback, where the learner only observes noisy
+binary feedback (win-loss or 0/1) comparing pairs of queried points
+based on their function values. Unlike traditional optimization, this
+setting lacks even zeroth-order feedback, making it particularly
+relevant in real-world applications like recommender systems or customer
+preference learning, where only binary preference data is available.
 
 The focus is on **online convex optimization (OCO)**, aiming to find a
 near-optimal point with minimal query complexity by actively querying
 noisy {0, 1} comparisons between decision point pairs. The study proves
-an impossibility result for the **non-stationary OCO setting**, where
+an impossibility result for the non-stationary OCO setting, where
 the convex function changes over time, showing that achieving this
 objective is not feasible in such scenarios.
 
-For the **stationary OCO problem**, where the function remains constant,
-the authors propose a **normalized gradient descent algorithm** to find
-an ϵ\epsilonϵ-optimal point. Key contributions include:
-
-Objective:--- title: "Objective" output: html_document ---
+For the stationary OCO problem, where the function remains constant
+over time, the authors propose a **normalized gradient descent
+algorithm** to find an ϵ\epsilonϵ-optimal point.
 
 ### Objective
 
-The objective of this R package is to address the standard
+The objective of this problem is to address the standard
 $(\epsilon, \delta)$-probably approximately correct (PAC) function
 optimization problem. Specifically, given any fixed
 $\epsilon, \delta \in (0, 1)$, the goal is to find a decision point
@@ -106,17 +106,21 @@ This package provides efficient algorithms to achieve this objective by
 leveraging dueling feedback (pairwise comparisons) and iterative
 optimization techniques.
 
-Noiseless Case: Normalized-Gradient Descent: Here we will anlyses the
-case of "no-noise" i.e upon querying any duel (x,y) the learner gets
-access to its true sign feedback $$ 1 (f(x) \geq f(y))$$.Let us first
-look of our main algorithm for $$\beta$$ smooth convex optimization
-which is based on techniqu eof normalized gradient descent.
+### Noiseless Case:
 
-F is beta smooth: A differentiable function
-$f: \mathbb{R}^d \to \mathbb{R}$ is said to be beta-smooth (or
-$\beta$-smooth, where $\beta > 0$) if its gradient $\nabla f(x)$ is
-Lipschitz continuous. Mathematically, this means there exists a constant
-$\beta > 0$ such that for all $x, y \in \mathbb{R}^d$: $$
+Here we will anlyses the case of "no-noise" i.e upon querying any duel
+(x,y) the learner gets access to its true sign feedback
+$$ 1 (f(x) \geq f(y))$$.Let us first look of our main algorithm for beta smooth 
+convex optimization which is based on technique of
+normalized gradient descent.
+
+### f is beta smooth:
+
+A differentiable function $f: \mathbb{R}^d \to \mathbb{R}$ is said to be
+beta-smooth (or $\beta$-smooth, where $\beta > 0$) if its gradient
+$\nabla f(x)$ is Lipschitz continuous. Mathematically, this means there
+exists a constant $\beta > 0$ such that for all $x, y \in \mathbb{R}^d$:
+$$
 \|\nabla f(x) - \nabla f(y)\|_2 \leq \beta \|x - y\|_2.
 $$
 
@@ -161,7 +165,8 @@ Set $\tilde{\mathbf{x}}_1 = \mathbf{x}_1$.
 **Output:**\
 Return $\tilde{\mathbf{x}}_{T_\epsilon}$.
 
-Convergence Guarantee: This theorem ensures that our algorithm will
+### Convergence Guarantee: 
+This theorem ensures that our algorithm will
 converge. Suppose Algorithm 1 is run with $$
 \eta = \frac{\sqrt{\epsilon}}{20\sqrt{d\beta}}, \quad 
 \gamma = \frac{(\epsilon/\beta)^{3/2}}{240\sqrt{2}d(D + \eta T)^2\sqrt{\log \frac{480\sqrt{\beta}d(D + \eta T)}{\sqrt{2}\epsilon}}}, \quad 
@@ -173,114 +178,165 @@ Then Algorithm 1 returns $$
 \mathbb{E}[f(\tilde{\mathbf{x}}_{T+1})] - f(\mathbf{x}^*) \leq \epsilon
 $$ with sample complexity $2T_\epsilon$.
 
-Example1: Logistic Regression We run our logistic regression algorithm
-on the above explained case and get.
-
+#### Basic getting start Example:
 ```{r}
-# Apply Beta-NGD Optimization
-#' result <- beta_NGD(
-#'  c(4, 2, 3, 2),
-#'  c(0.003, 0.007, 0.005, 0.007),
-#'  c(0.001, 0.002, 0.003, 0.004),
-#'  5000,
-#'  f_value
-#' )
-#'
-#' f_array <- result$f_array
-#' optimum <- result$optimum
-#'
-#' # Plot the RSS over iterations
-#' library(ggplot2)
-#' f_data <- data.frame(
-#'   Index = 0:(length(f_array) - 1),
-#'   Value = f_array
-#' )
-#' ggplot(f_data, aes(x = Index, y = Value)) +
-#'   geom_line(color = "blue") +          # Line connecting points
-#'   labs(title = "RSS vs Iterations",
-#'        x = "Iterations",
-#'        y = "RSS") +
-#'   theme_minimal() +
-#'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
-#'
+# Define an initial starting point and initialise the parameters
+f <- function(x) sum(x^2)
+initial_point <- 2
+eta <- 0.01
+gamma <- 0.1
+T <- 1000
+
+# Run the normalized gradient descent
+optimal_point <- beta_NGD(initial_point, eta, gamma, T,f)
+print(optimal_point$optimum)
 ```
 
-Beta_NGD optimum: This algorithm starts with some fixed initial values
-based on our function and theoritical result ensures that this algorithm
-will converge much faster than our previous random initialsation
-function.
+### Multiple Linear Regression Example 
+We run our linear regression algorithm on the above explained case and get.
+
+```{r}
+ # Set random seed for reproducibility
+set.seed(42)
+
+# Generate synthetic data
+ n_samples <- 100
+ I <- rep(1, n_samples)                        # Intercept term
+ X1 <- runif(n_samples, 0, 1)                  # Feature 1
+ X2 <- runif(n_samples, 0, 0.5)                # Feature 2
+ X3 <- runif(n_samples, 0, 0.8)                # Feature 3
+ X <- cbind(I, X1, X2, X3)
+ beta <- c(5, 1, 2, 1)                         # True coefficients
+ # Response variable with noise
+ y <- X %*% beta + rnorm(n_samples, mean = 0, sd = 0.4)
+ data <- data.frame(X1 = X1, X2 = X2, X3 = X3, y = y)
+
+ # Fit a linear regression model
+ model <- lm(y ~ ., data = data)
+ print("lm output")
+ print(coef(model))
+
+ # Define the objective function (Residual/error Sum of Squares)
+ f_value <- function(beta) {
+   sum((y - X %*% beta)^2)
+ }
+# Apply Beta-NGD Optimization
+result <- beta_NGD(
+  c(4, 2, 3, 2),
+  c(0.003, 0.007, 0.005, 0.007),
+  c(0.001, 0.002, 0.003, 0.004),
+  5000,
+  f_value
+ )
+
+ f_array <- result$f_array
+ optimum <- result$optimum
+ print("Beta_NGD result")
+ print(optimum)
+ # Plot the RSS over iterations
+ library(ggplot2)
+ f_data <- data.frame(
+   Index = 0:(length(f_array) - 1),
+   Value = f_array
+ )
+ ggplot(f_data, aes(x = Index, y = Value)) +
+   geom_line(color = "blue") +          # Line connecting points
+   labs(title = "RSS vs Iterations",
+        x = "Iterations",
+        y = "RSS") +
+   theme_minimal() +
+   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+```
+
+## Observation: 
+Both lm result and our algorithm result are pretty close.
+
+### Beta_NGD optimum:
+
+This algorithm starts with some *fixed* initial values based on our
+function and theoritical result ensures that this algorithm will
+converge much faster than our previous random initialisation function.
+
+### Simple getting start example:
+```{r}
+f <- function(x) sum(x^2)
+initial_point <- 1.5
+D <- 10
+eigen_max <- 2
+beta_NGD_optimal_point <- beta_NGD_optimum (initial_point, D, eigen_max, epsilon = 0.1, f)
+print(beta_NGD_optimal_point$optimum)
+```
+
+### Multiple Logistic Regression Example:
 
 ```{r}
 # Logistic regression example with Beta-NGD
-#' # Set random seed for reproducibility
-#' set.seed(501)
-#'
-#' # Generate synthetic data for logistic regression
-#' n <- 1000  # Number of data points
-#' d <- 5     # Number of features
-#' X <- matrix(rnorm(n * d), n, d)  # Generate random features
-#'
-#' # Generate binary labels with a true beta
-#' true_beta <- c(1, 2, 3, 4, 5)
-#' prob <- 1 / (1 + exp(-X %*% true_beta))
-#' y <- rbinom(n, 1, prob)  # Binary labels
-#'
-#' # Define the logistic loss function as the objective function
-#' f_value <- function(beta) {
-#'   linear_comb <- X %*% beta
-#'   loss <- -mean(y * log(1 / (1 + exp(-linear_comb))) +
-#'                 (1 - y) * log(1 - 1 / (1 + exp(-linear_comb))))
-#'   return(loss)
-#' }
-#'
-#' # Initialize parameters
-#' initial_point <- c(2, 1, 4, 3, 6)
-#' D <- 10
-#' Hessian <- t(X) %*% X
-#' eigenvalues <- eigen(Hessian)$values
-#' eigen_max <- 0.25 * max(eigenvalues)
-#'
-#' # Run the beta_NGD_optimum function
-#' result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
-#' point <- result$optimum
-#' f_array <- result$f_array
-#' print("Estimated parameters using beta_NGD:")
-#' print(point)
-#'
-#' # Compare with logistic regression solution from glm for verification
-#' glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
-#' print("GLM estimated beta:")
-#' print(coef(glm_fit))
-#'
-#' # Create a data frame for visualization
-#' f_data <- data.frame(
-#'   Index = 0:(length(f_array) - 1),
-#'   Value = f_array
-#' )
-#'
-#' # Plot negative log-likelihood vs iterations using ggplot2
-#' library(ggplot2)
-#' ggplot(f_data, aes(x = Index, y = Value)) +
-#'   geom_line(color = "blue") +           # Line connecting points
-#'   labs(title = "Negative log-likelihood vs Iterations",
-#'        x = "Iterations",
-#'        y = "Negative log-likelihood") +
-#'   theme_minimal() +
-#'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+ # Set random seed for reproducibility
+ set.seed(501)
+
+ # Generate synthetic data for logistic regression
+ n <- 1000  # Number of data points
+ d <- 5     # Number of features
+ X <- matrix(rnorm(n * d), n, d)  # Generate random features
+ # Generate binary labels with a true beta
+ true_beta <- c(1, 2, 3, 4, 5)
+ prob <- 1 / (1 + exp(-X %*% true_beta))
+ y <- rbinom(n, 1, prob)  # Binary labels
+ # Define the logistic loss function as the objective function
+ f_value <- function(beta) {
+   linear_comb <- X %*% beta
+   loss <- -mean(y * log(1 / (1 + exp(-linear_comb))) +
+                 (1 - y) * log(1 - 1 / (1 + exp(-linear_comb))))
+   return(loss)
+ }
+
+ # Initialize parameters
+ initial_point <- c(2, 1, 4, 3, 6)
+ D <- 10
+ Hessian <- t(X) %*% X
+ eigenvalues <- eigen(Hessian)$values
+ eigen_max <- 0.25 * max(eigenvalues)
+
+ # Run the beta_NGD_optimum function
+ result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
+ point <- result$optimum
+ f_array <- result$f_array
+ print("Estimated parameters using beta_NGD:")
+ print(point)
+ # Compare with logistic regression solution from glm for verification
+ glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
+ print("GLM estimated beta:")
+ print(coef(glm_fit))
+
+ # Create a data frame for visualization
+ f_data <- data.frame(
+   Index = 0:(length(f_array) - 1),
+   Value = f_array
+ )
+
+ # Plot negative log-likelihood vs iterations using ggplot2
+ library(ggplot2)
+ ggplot(f_data, aes(x = Index, y = Value)) +
+   geom_line(color = "blue") +           # Line connecting points
+   labs(title = "Negative log-likelihood vs Iterations",
+        x = "Iterations",
+        y = "Negative log-likelihood") +
+   theme_minimal() +
+   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 
 ```
 
-\### Convergence for α-Strongly Convex and β-Smooth Functions
+### α-Strongly Convex and β-Smooth Functions:
 
 We demonstrate an improved convergence rate for functions that are both
 **α-strongly convex** and **β-smooth**. In this scenario, we leverage
-**Algorithm 1 (β-NGD)**, which is optimal for β-smooth convex functions,
+β-NGD, which is optimal for β-smooth convex functions,
 as a black-box subroutine to develop an efficient algorithm for this
 specialized setting.
 
-Our proposed method, **(α, β)-NGD** (Algorithm 2), follows a
+Our proposed method, **(α, β)-NGD** , follows a
 **phase-wise iterative optimization** approach. Within each phase,
-Algorithm 1 is employed as a black box to identify an
+beta_NGD is employed as a black box to identify an
 $\epsilon_k$-optimal point, where $\epsilon_k$ decreases exponentially
 across phases (starting with $\epsilon_1 = 1$). The optimization process
 for the $(k+1)$-th phase is **warm-started** using the optimizer
@@ -291,12 +347,14 @@ strong convexity property of the objective function with the efficient
 gradient descent method for β-smooth functions, making it suitable for
 scenarios requiring both precision and efficiency.
 
-Example2:Linear Regression As the objective function of Linear
-Regression is $$\alpha$$ strongly convex so we can use our algorithm for
-this. We will run our algoithm on this.
+#### Norm Function Example:
+
+As the objective function of simple norm calculation of a vector is α-Strongly
+Convex and β-Smooth, so we can use our algorithm for this. We will run our algorithm
+on this.
 
 ```{r}
-f <- function(x) sum(x^2)  # Example quadratic function
+f <- function(x) sum(x^2)  # Example norm function
 
  # Set parameters
  initial_point <- c(1, 1)
@@ -310,19 +368,110 @@ f <- function(x) sum(x^2)  # Example quadratic function
  print(result)
 ```
 
-Example 3: Dimension Effects Plot We will chnage our dimension and see
-effects of our plots. Here is the plot for $$d=2,3,4,5$$
+#### Example 3: 
+We will change our dimension and see effects of our plots. Here is the plot for $$d=2,3,4,5$$
 
-F is alpha strongly convex & beta smooth:
+```{r}
+library(ggplot2)
 
-Algorithm:
+set.seed(42)
+epsilon <- 0.1
 
-Convergence Guarnatee: \### Convergence for α-Strongly Convex and
-β-Smooth Functions
+# Function to calculate RSS
+RSS <- function(beta, X, y) {
+  return(sum((y - X %*% beta)^2))  # Residual Sum of Squares (RSS)
+}
+
+
+# Generate data for multiple scenarios of beta length
+n_samples <- 50
+I <- rep(1, n_samples)
+scenarios <- list(
+  "2 features" = c(5, 1),
+  "3 features" = c(5, 1, 2),
+  "4 features" = c(5, 1, 2, 1),
+  "5 features" = c(5, 1, 2, 1, 3),
+  "6 features" = c(5, 1, 2, 1, 3, 4)
+)
+initials <- list(
+  "2 features" = c(4, 2),
+  "3 features" = c(4, 2, 3),
+  "4 features" = c(4, 2, 3, 2),
+  "5 features" = c(4, 2, 3, 2, 2),
+  "6 features" = c(4, 2, 3, 2, 2, 5)
+)
+X_list <- list(
+  "2 features" = cbind(I, replicate(1, runif(n_samples, 0, 1))),
+  "3 features" = cbind(I, replicate(2, runif(n_samples, 0, 1))),
+  "4 features" = cbind(I, replicate(3, runif(n_samples, 0, 1))),
+  "5 features" = cbind(I, replicate(4, runif(n_samples, 0, 1))),
+  "6 features" = cbind(I, replicate(5, runif(n_samples, 0, 1)))
+)
+T_max=0
+f_data_list <- list()
+for (scenario in names(scenarios)) {
+  X <- X_list[[scenario]]
+  beta <- scenarios[[scenario]]
+  initial_point <- initials[[scenario]]
+  d<- length(initial_point)
+  D= sum((beta-initial_point)^2)+1
+  eigen_max= max(eigen(2 * t(X) %*% X)$values)
+  T= d*eigen_max*D/epsilon
+  if (T> T_max){T_max=T}
+}
+for (scenario in names(scenarios)) {
+  beta <- scenarios[[scenario]]
+  n_features <- length(beta)
+  
+  # Generate synthetic data
+  X <- X_list[[scenario]]
+  y <- X %*% beta + rnorm(n_samples, mean = 0, sd = 0.4)
+  
+  # Compute RSS values
+  initial_point= initials[[scenario]]
+  d= length(initial_point)
+  B= max(eigen(2 * t(X) %*% X)$values)
+  eta= sqrt(epsilon)/(20*sqrt(d*B))
+  D= sum((beta-initial_point)^2)+1
+  T= T_max
+  gamma= (epsilon/B)^(3/2)/(240*sqrt(2)*d*(D+eta*T)^2*sqrt(log(480*sqrt(B*d)*(D+ eta*T)/sqrt(2*epsilon))))
+  f= function(beta){return(RSS(beta, X, y))}
+  f_array <- beta_NGD(initial_point, eta, gamma, T, f)$f_array
+  
+  # Add to combined data frame
+  f_data <- data.frame(
+    Iteration = 0:(length(f_array) - 1),
+    RSS = f_array,
+    Scenario = scenario
+  )
+  f_data_list[[scenario]] <- f_data
+  print(paste0("Completed ", scenario))
+}
+
+# Combine all data
+f_data_combined <- do.call(rbind, f_data_list)
+
+# Plotting
+print(ggplot(f_data_combined, aes(x = Iteration, y = RSS, color = Scenario)) +
+        geom_line() +
+        labs(title = "RSS vs Iterations for Different Beta Lengths",
+             x = "Iterations",
+             y = "RSS",
+             color = "Scenario") +
+        theme_minimal() +
+        theme(plot.title = element_text(hjust = 0.5)))
+
+```
+
+## Observations: 
+
+### Algorithm:
+
+#### Convergence Guarnatee:
 
 Consider $f$ to be **α-strongly convex** and **β-smooth**. Using
-Algorithm 2 ($(\alpha, \beta)$-NGD), we achieve an improved convergence
-rate. Specifically, Algorithm 2 ensures:
+ $(\alpha, \beta)$-NGD, we achieve an improved convergence
+rate. Specifically, this algorithm ensures:
 
 $$
 \mathbb{E}[f(\tilde{x})] - f(x^*) \leq \epsilon,
@@ -340,11 +489,11 @@ optimization accuracy, - $\|x_1 - x^*\|^2$: Squared distance between the
 initial point $x_1$ and the optimal point $x^*$.
 
 This result demonstrates that the $(\alpha, \beta)$-NGD algorithm
-leverages the strong convexity property to significantly reduce the
+leverages the strong convexity property to **significantly** reduce the
 number of pairwise comparisons required for achieving a given level of
 accuracy.
 
-General Case:Noisy sign feedback \### Handling Noisy Comparison Feedback
+### General Case:Noisy sign feedback
 
 In many real-world scenarios, comparison feedback may be noisy.
 Specifically, the oracle provides feedback such that:
@@ -365,22 +514,24 @@ $$
 for every pairwise query $(x_t, y_t)$. However, noisy feedback may
 introduce incorrect signs where the oracle fails.
 
-### Resampling Trick
+#### Resampling Trick
 
-To address this issue, we introduce a 'resampling-trick'. This approach
+To address this issue, the paper introduces a 'resampling-trick'. This approach
 effectively mitigates the impact of noise in the feedback by ensuring
 more reliable comparisons through repeated queries. The algorithm
 performs multiple resamples for each pairwise query and aggregates the
 feedback to estimate the true sign, reducing the impact of incorrect
-comparisons caused by noise.
+comparisons caused by noise. We use our this sign_recovery function for
+this.
 
-Sign_recovery: We use our this sign_recovery function for this.
+### Algorithm:
 
-Algorithm:
+### Our Extension:
 
-Our Extension: Now, we have made some of our extension. firstly we will
-show for the class of functions which satisfy the famous PL inequality.
-PL inequality Case: \## Polyak-Łojasiewicz (PL) Inequality
+Now, we have made some extensions of our work. Firstly, we will show for the
+class of functions which satisfy the famous PL inequality.
+
+#### Polyak-Łojasiewicz (PL) Inequality
 
 A function $f$ satisfies the **Polyak-Łojasiewicz (PL) inequality** if
 there exists a positive constant $\mu > 0$ such that:
@@ -399,6 +550,10 @@ The PL inequality is less restrictive than strong convexity and applies
 to a broader class of functions. It guarantees that gradient-based
 optimization methods converge to the minimum value under this condition.
 This makes it a valuable property for analyzing optimization algorithms.
+Here is one example demontrating this case. This function is neither convex
+nor concave but satisfies PL inequality. 
+
+### An Example:
 
 ```{r}
 # Define the function f(x) = x^2 + 3 * sin^2(x)
@@ -435,19 +590,22 @@ print(ggplot(f_data, aes(x = Index, y = Value)) +
 
 ```
 
-General Non_Convex Setup: Now we will go for the general non-convex
-setup. First thing that comes to our mind most general setup is Neural
-Network. Neural Network Optimization: I will use a simple two layered
-neural network. \### Wide 2-Layer Neural Network with Preference-Based
-Feedback
+#### Observation:
+From the plot,we can see that it is converging to true optimum pretty first.
+
+### General Non_Convex Setup(Neural Network Optimization):
+
+Now we will go for the general non-convex setup. First thing that comes
+to our mind for most general setup is Neural Network. I will use a two 
+layered neural network.
 
 Consider a wide 2-layer neural network defined as $y = f_\theta(x)$,
-where $\theta$ is the set of weights. The network uses either sigmoid or
-ReLU activation functions. The output $y$ of this network represents the
+where $\theta$ is the set of weights. The network uses sigmoid
+activation functions. The output $y$ of this network represents the
 preference or reward for the input $x$, which could be, for example, a
 response generated by a large language model (LLM).
 
-### Hidden Loss Function
+#### Hidden Loss Function
 
 The underlying loss function is defined as:
 
@@ -467,15 +625,6 @@ $$
 This binary feedback indicates whether the user prefers the response
 generated by weights $w_1$ over $w_2$ on average.
 
-### Noiseless vs. Noisy Feedback
-
--   **Noiseless Feedback**: For simplicity, we initially consider the
-    noiseless case, where the user provides accurate comparisons between
-    $L(w_1)$ and $L(w_2)$.
--   **Noisy Feedback**: In more realistic scenarios, the feedback is
-    based on specific input samples $x$, introducing noise. For such
-    cases, the feedback takes the form:
-
 $$
 1(L(w_1, x) > L(w_2, x))
 $$
@@ -483,23 +632,75 @@ $$
 Here, the preference is determined based on $x$ instead of the expected
 loss.
 
-### Goal
+#### Goal
 
 The primary objective is to minimize the loss function $L(w)$ using only
 the dueling feedback provided by the user. The learner iteratively
 updates the weights $w$ based on preference feedback to converge toward
 an optimal set of weights.
 
-This setting is particularly relevant in applications where direct
-gradient or loss value information is unavailable, and only comparative
-preferences can be observed.
+#### Example:
+
+```{r}
+set.seed(324)
+# Generate synthetic data
+ n_samples <- 200
+ n_features <- 6
+ n_hidden <- 20
+
+ X <- matrix(rnorm(n_samples * n_features), n_samples, n_features)
+ true_weights <- list(
+   W1 = matrix(runif(n_features * n_hidden), n_features, n_hidden),
+   b1 = runif(n_hidden),
+   W2 = matrix(runif(n_hidden), n_hidden, 1),
+   b2 = runif(1)
+ )
+ hidden_layer <- 1 / (1 + exp(-(X %*% true_weights$W1 + true_weights$b1)))
+ output_layer <- hidden_layer %*% true_weights$W2 + true_weights$b2
+ y <- rowSums(output_layer)
+
+ # Initialize neural network weights
+ initial_weights <- list(
+   W1 = matrix(rnorm(n_features * n_hidden), n_features, n_hidden),
+   b1 = rep(0, n_hidden),
+   W2 = matrix(rnorm(n_hidden), n_hidden, 1),
+   b2 = 0
+ )
+
+ # Set optimization parameters
+ eta <- 0.01
+ gamma <- 0.1
+ T <- 10000
+
+ # Run optimization
+ result <- NN_optimization(
+   initial_weights = initial_weights,
+   X = X,
+   y = y,
+   eta = eta,
+   gamma = gamma,
+   T = T
+ )
+
+ # Plot the loss over iterations
+ plot(
+  result$loss_array, type = "l",
+  main = "Loss Over Iterations",
+  xlab = "Iterations", ylab = "Loss"
+ )
+```
+
 
 ### Conclusion:
 
-We observed that our originial two cases are now limited only to simple
-convex function.It can be seen from the plots that the algoithms are
-performing pretty well for non-convex case. \### Reference: If you use
-this package in your research, please cite the original paper:
+We observed that our original two cases in the paper are not limited 
+only to simple convex function.It can be seen from the plots that the 
+algorithms are performing pretty well for non-convex case.
+
+### Reference:
+
+If you use this package in your research, please cite the original
+paper:
 
 Saha, A., Koren, T., & Mansour, Y. (2021). Dueling Convex Optimization.
 Proceedings of the 38th International Conference on Machine Learning.
