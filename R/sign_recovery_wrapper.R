@@ -1,4 +1,4 @@
-#' Perform Sign Recovery with a Custom Objective Function
+#' Perform Sign Recovery with a Objective Function
 #'
 #' This function serves as a wrapper for the C++ function `signRecovery_c`. It performs
 #' sign recovery by repeatedly comparing two points using the provided objective function.
@@ -33,5 +33,6 @@ signRecovery <- function(x, y, delta, f) {
     stop("delta must be a positive numeric value.")
   }
   out <- signRecovery_c(x, y, delta, f)
+  #return the recovered sign
   return(out)
 }

@@ -18,11 +18,12 @@
 #' @export
 #'
 #' @examples
+#' library(ggplot2)
 #' # Set random seed for reproducibility
 #' set.seed(42)
 #'
 #' # Generate synthetic data
-#' n_samples <- 100
+#' n_samples <- 100                              #no of sample
 #' I <- rep(1, n_samples)                        # Intercept term
 #' X1 <- runif(n_samples, 0, 1)                  # Feature 1
 #' X2 <- runif(n_samples, 0, 0.5)                # Feature 2
@@ -52,22 +53,23 @@
 #'  f_value
 #' )
 #'
+#' # Extracting output
 #' f_array <- result$f_array
 #' optimum <- result$optimum
 #'
-#' # Plot the RSS over iterations
-#' library(ggplot2)
+#' # data frame created
 #' f_data <- data.frame(
 #'   Index = 0:(length(f_array) - 1),
 #'   Value = f_array
 #' )
+#' # Plot the RSS over iterations
 #' ggplot(f_data, aes(x = Index, y = Value)) +
-#'   geom_line(color = "blue") +          # Line connecting points
+#'   geom_line(color = "blue") +
 #'   labs(title = "RSS vs Iterations",
 #'        x = "Iterations",
 #'        y = "RSS") +
 #'   theme_minimal() +
-#'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+#'   theme(plot.title = element_text(hjust = 0.5))
 #'
 beta_NGD <- function(initial_point, eta, gamma, T, f) {
   if (!is.numeric(T) || T <= 0) {
@@ -137,8 +139,8 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' # Set random seed for reproducibility
 #' set.seed(501)
 #'
-#' # Generate synthetic data for logistic regression
-#' n <- 1000  # Number of data points
+#' # Generate data for logistic regression
+#' n <- 100  # Number of data points
 #' d <- 5     # Number of features
 #' X <- matrix(rnorm(n * d), n, d)  # Generate random features
 #'
@@ -158,19 +160,21 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' # Initialize parameters
 #' initial_point <- c(2, 1, 4, 3, 6)
 #' D <- 10
-#' Hessian <- t(X) %*% X
+#' Hessian <- t(X) %*% X      #Hessian for logistic regression
 #' eigenvalues <- eigen(Hessian)$values
-#' eigen_max <- 0.25 * max(eigenvalues)
+#' eigen_max <- 0.25 * max(eigenvalues)   #max eigenvalue of hessian
 #'
 #' # Run the beta_NGD_optimum function
-#' result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
+#' result <- beta_NGD_optimum(initial_point, D,
+#'                            eigen_max, epsilon = 0.1, f_value)
 #' point <- result$optimum
 #' f_array <- result$f_array
-#' print("Estimated parameters using beta_NGD:")
+#' print("Estimated parameters using beta_NGD_optimum:")
 #' print(point)
 #'
-#' # Compare with logistic regression solution from glm for verification
-#' glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
+#' # Compare with logistic solution from glm
+#' # Fit logistic regression without intercept
+#' glm_fit <- glm(y ~ X - 1, family = binomial)
 #' print("GLM estimated beta:")
 #' print(coef(glm_fit))
 #'
@@ -183,12 +187,12 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' # Plot negative log-likelihood vs iterations using ggplot2
 #' library(ggplot2)
 #' ggplot(f_data, aes(x = Index, y = Value)) +
-#'   geom_line(color = "blue") +           # Line connecting points
+#'   geom_line(color = "blue") +
 #'   labs(title = "Negative log-likelihood vs Iterations",
 #'        x = "Iterations",
 #'        y = "Negative log-likelihood") +
 #'   theme_minimal() +
-#'   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+#'   theme(plot.title = element_text(hjust = 0.5))
 
 beta_NGD_optimum <- function(initial_point, D, eigen_max, epsilon = 0.1, f) {
   #Input check

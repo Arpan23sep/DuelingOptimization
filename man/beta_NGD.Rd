@@ -30,11 +30,12 @@ The function attempts to find an optimal point in a given space by iteratively u
 the initial point in the direction estimated from comparison feedback.
 }
 \examples{
+library(ggplot2)
 # Set random seed for reproducibility
 set.seed(42)
 
 # Generate synthetic data
-n_samples <- 100
+n_samples <- 100                              #no of sample
 I <- rep(1, n_samples)                        # Intercept term
 X1 <- runif(n_samples, 0, 1)                  # Feature 1
 X2 <- runif(n_samples, 0, 0.5)                # Feature 2
@@ -64,21 +65,22 @@ result <- beta_NGD(
  f_value
 )
 
+# Extracting output
 f_array <- result$f_array
 optimum <- result$optimum
 
-# Plot the RSS over iterations
-library(ggplot2)
+# data frame created
 f_data <- data.frame(
   Index = 0:(length(f_array) - 1),
   Value = f_array
 )
+# Plot the RSS over iterations
 ggplot(f_data, aes(x = Index, y = Value)) +
-  geom_line(color = "blue") +          # Line connecting points
+  geom_line(color = "blue") +
   labs(title = "RSS vs Iterations",
        x = "Iterations",
        y = "RSS") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))  # Center the title
+  theme(plot.title = element_text(hjust = 0.5))
 
 }

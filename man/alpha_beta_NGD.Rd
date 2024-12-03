@@ -42,13 +42,13 @@ and smoothness conditions for accurate results.
 }
 \examples{
 # Define the objective function
-f <- function(x) sum(x^2)  # Example quadratic function
+f <- function(x) sum(x^2)  # quadratic function
 
 # Set parameters
 initial_point <- c(1, 1)
-alpha <- 0.1
+alpha <- 1
 beta <- 1.0
-D <- 3
+D <- 2
 tolerance <- 0.01
 
 # Run the algorithm

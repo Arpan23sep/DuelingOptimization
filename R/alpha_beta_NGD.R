@@ -28,13 +28,13 @@
 #'
 #' @examples
 #' # Define the objective function
-#' f <- function(x) sum(x^2)  # Example quadratic function
+#' f <- function(x) sum(x^2)  # quadratic function
 #'
 #' # Set parameters
 #' initial_point <- c(1, 1)
-#' alpha <- 0.1
+#' alpha <- 1
 #' beta <- 1.0
-#' D <- 3
+#' D <- 2
 #' tolerance <- 0.01
 #'
 #' # Run the algorithm
@@ -63,7 +63,7 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance = 0.1, f) {
   gamma_1 <- (epsilon_1 / beta)^(3 / 2) / (240 * sqrt(2) * d * (D + eta_1 * t_1)^2 *
                                              sqrt(log(480 * sqrt(beta * d) * (D + eta_1 * t_1) / (sqrt(2) * epsilon_1))))
 
-  # Initial descent using Algorithm 1
+  # Initial descent using beta_NGD
   x <- beta_NGD(x_1, eta_1, gamma_1, t_1, f)$optimum
 
   # Main loop for each phase
@@ -80,5 +80,6 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance = 0.1, f) {
     print(paste0(k / phase_count * 100, "% Done!"))
   }
 
+  #return the result x
   return(x)
 }

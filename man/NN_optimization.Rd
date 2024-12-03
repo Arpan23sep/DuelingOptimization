@@ -40,11 +40,12 @@ and converted back to their original structure after optimization.
 \examples{
 set.seed(42)
 
-# Generate synthetic data
+# Generate data
 n_samples <- 100
 n_features <- 5
 n_hidden <- 10
 
+#Generate design matrix
 X <- matrix(rnorm(n_samples * n_features), n_samples, n_features)
 true_weights <- list(
   W1 = matrix(runif(n_features * n_hidden), n_features, n_hidden),
@@ -54,6 +55,7 @@ true_weights <- list(
 )
 hidden_layer <- 1 / (1 + exp(-(X \%*\% true_weights$W1 + true_weights$b1)))
 output_layer <- hidden_layer \%*\% true_weights$W2 + true_weights$b2
+# Generate y
 y <- rowSums(output_layer)
 
 # Initialize neural network weights

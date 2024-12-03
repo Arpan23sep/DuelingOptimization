@@ -2,7 +2,7 @@
 % Please edit documentation in R/sign_recovery_wrapper.R
 \name{signRecovery}
 \alias{signRecovery}
-\title{Perform Sign Recovery with a Custom Objective Function}
+\title{Perform Sign Recovery with a Objective Function}
 \usage{
 signRecovery(x, y, delta, f)
 }
