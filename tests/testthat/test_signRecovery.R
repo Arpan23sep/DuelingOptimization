@@ -1,18 +1,14 @@
 library(testthat)
-library(DuelingOptimization)  # Replace with your package name if different
+library(DuelingOptimization)
 
 test_that("signRecovery runs successfully and returns correct output", {
-  # Define a simple objective function
+  # Objective function
   f <- function(x) sum(x^2)  # Quadratic function
 
   # Define input parameters
   x <- c(1, 2)
   y <- c(3, 4)
-  delta <- 0.01
-
-  # Mock `signRecovery_c` if necessary for testing
-  # Uncomment below and replace with actual mock implementation if needed.
-  # mockery::stub(signRecovery, "signRecovery_c", function(x, y, delta, f) 1)
+  delta <- 0.01          #Setting precision level
 
   # Run signRecovery
   result <- signRecovery(x = x, y = y, delta = delta, f = f)
@@ -20,12 +16,12 @@ test_that("signRecovery runs successfully and returns correct output", {
   # Check output type
   expect_type(result, "integer")
 
-  # Since `signRecovery_c` behavior is unknown, validate result range
+  # validate result range/is it in our precision range or not
   expect_true(result %in% c(-1, 1))
 })
 
 test_that("signRecovery throws appropriate errors for invalid inputs", {
-  f <- function(x) sum(x^2)  # Define a simple objective function
+  f <- function(x) sum(x^2)
 
   # Test for non-numeric x or y
   expect_error(signRecovery(x = "a", y = c(1, 2), delta = 0.01, f = f),
@@ -40,16 +36,15 @@ test_that("signRecovery throws appropriate errors for invalid inputs", {
   # Test for invalid delta
   expect_error(signRecovery(x = c(1, 2), y = c(3, 4), delta = -0.01, f = f),
                "delta must be a positive numeric value")
-  expect_error(signRecovery(x = c(1, 2), y = c(3, 4), delta = "invalid", f = f),
+  expect_error(signRecovery(x = c(1, 2), y = c(3, 4), delta = "hiii", f = f),
                "delta must be a positive numeric value")
 
   # Test for invalid f
-  expect_error(signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = "not_a_function"),
+  expect_error(signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = "function?"),
                "f must be a valid R function")
 })
 
 test_that("signRecovery integrates well with a known objective function", {
-  # Define a simple linear function
   f <- function(x) sum(x)
 
   # Case where f(x) < f(y)
