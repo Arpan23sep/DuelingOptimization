@@ -52,28 +52,29 @@ alpha_beta_NGD: Extends the gradient descent to strongly convex and
 β-smooth functions, achieving faster convergence.
 
 signRecovery: It performs sign recovery by repeatedly
-comparing(resampling) two points using the provided objective function. The original function is written in RCPP.
+comparing(resampling) two points using the provided objective function.
+The original function is written in RCPP.
 
-### Mathamatical problem:
+### Mathematical problem:
 
-This work addresses the challenge of convex optimization with
-preference (dueling) feedback, where the learner only observes noisy
-binary feedback (win-loss or 0/1) comparing pairs of queried points
-based on their function values. Unlike traditional optimization, this
-setting lacks even zeroth-order feedback, making it particularly
-relevant in real-world applications like recommender systems or customer
-preference learning, where only binary preference data is available.
+This work addresses the challenge of convex optimization with preference
+(dueling) feedback, where the learner only observes noisy binary
+feedback (win-loss or 0/1) comparing pairs of queried points based on
+their function values. Unlike traditional optimization, this setting
+lacks even zeroth-order feedback, making it particularly relevant in
+real-world applications like recommender systems or customer preference
+learning, where only binary preference data is available.
 
 The focus is on **online convex optimization (OCO)**, aiming to find a
 near-optimal point with minimal query complexity by actively querying
 noisy {0, 1} comparisons between decision point pairs. The study proves
-an impossibility result for the non-stationary OCO setting, where
-the convex function changes over time, showing that achieving this
-objective is not feasible in such scenarios.
+an impossibility result for the non-stationary OCO setting, where the
+convex function changes over time, showing that achieving this objective
+is not feasible in such scenarios.
 
-For the stationary OCO problem, where the function remains constant
-over time, the authors propose a **normalized gradient descent
-algorithm** to find an ϵ\epsilonϵ-optimal point.
+For the stationary OCO problem, where the function remains constant over
+time, the authors propose a **normalized gradient descent algorithm** to
+find an ϵ\epsilonϵ-optimal point.
 
 ### Objective
 
@@ -110,11 +111,11 @@ optimization techniques.
 
 Here we will anlyses the case of "no-noise" i.e upon querying any duel
 (x,y) the learner gets access to its true sign feedback
-$$ 1 (f(x) \geq f(y))$$.Let us first look of our main algorithm for beta smooth 
-convex optimization which is based on technique of
-normalized gradient descent.
+$$ 1 (f(x) \geq f(y))$$.Let us first look of our main algorithm for beta
+smooth convex optimization which is based on technique of normalized
+gradient descent.
 
-### f is beta smooth:
+### Function is beta smooth:
 
 A differentiable function $f: \mathbb{R}^d \to \mathbb{R}$ is said to be
 beta-smooth (or $\beta$-smooth, where $\beta > 0$) if its gradient
@@ -124,7 +125,7 @@ $$
 \|\nabla f(x) - \nabla f(y)\|_2 \leq \beta \|x - y\|_2.
 $$
 
-### Algorithm: $\beta$-NGD($\mathbf{x}_1, \eta, \gamma, T_\epsilon$)
+#### Algorithm: $\beta$-NGD($\mathbf{x}_1, \eta, \gamma, T_\epsilon$)
 
 **Input:**\
 - Initial point: $\mathbf{x}_1 \in \mathbb{R}^d$\
@@ -165,9 +166,10 @@ Set $\tilde{\mathbf{x}}_1 = \mathbf{x}_1$.
 **Output:**\
 Return $\tilde{\mathbf{x}}_{T_\epsilon}$.
 
-### Convergence Guarantee: 
-This theorem ensures that our algorithm will
-converge. Suppose Algorithm 1 is run with $$
+#### Convergence Guarantee:
+
+This theorem ensures that our algorithm will converge. Suppose Algorithm
+1 is run with $$
 \eta = \frac{\sqrt{\epsilon}}{20\sqrt{d\beta}}, \quad 
 \gamma = \frac{(\epsilon/\beta)^{3/2}}{240\sqrt{2}d(D + \eta T)^2\sqrt{\log \frac{480\sqrt{\beta}d(D + \eta T)}{\sqrt{2}\epsilon}}}, \quad 
 \text{and} \quad T_\epsilon = O\left(\frac{d\beta D}{\epsilon}\right),
@@ -178,30 +180,40 @@ Then Algorithm 1 returns $$
 \mathbb{E}[f(\tilde{\mathbf{x}}_{T+1})] - f(\mathbf{x}^*) \leq \epsilon
 $$ with sample complexity $2T_\epsilon$.
 
-#### Basic getting start Example:
+#### Getting Started: A Simple Example
+
 ```{r}
 # Define an initial starting point and initialise the parameters
-f <- function(x) sum(x^2)
-initial_point <- 2
-eta <- 0.01
-gamma <- 0.1
-T <- 1000
+f <- function(x) sum(x^2)    #Define the smooth convex function
+initial_point <- 2           #Give an initial starting point
+eta <- 0.01                  #controls the update size at each iteration
+gamma <- 0.1                 #perturbation parameter
+T <- 1000                    #no of iterations
 
 # Run the normalized gradient descent
 optimal_point <- beta_NGD(initial_point, eta, gamma, T,f)
-print(optimal_point$optimum)
+#beta_NGD will return a list that contains optimal point after T iterations 
+#nd a vector containing the best function value observed at each iteration
+print(optimal_point$optimum)           #printing the optimum value 
 ```
 
-### Multiple Linear Regression Example 
-We run our linear regression algorithm on the above explained case and get.
+#### Observation:
 
-```{r}
- # Set random seed for reproducibility
-set.seed(42)
+Optimal value is 0, as expected. Minimum value of square function is 0.
 
-# Generate synthetic data
- n_samples <- 100
- I <- rep(1, n_samples)                        # Intercept term
+### Multiple Linear Regression using beta_NGD function
+
+We run our linear regression algorithm on the above explained case and
+get.
+
+```{r,fig.width=7, fig.height=4}
+#Linear Regression using beta_NGD 
+# Set random seed for reproducibility
+  set.seed(42)
+
+# Generating data
+ n_samples <- 100                              #No of samples
+ I <- rep(1, n_samples)                        # Intercept term(vector of 1's)
  X1 <- runif(n_samples, 0, 1)                  # Feature 1
  X2 <- runif(n_samples, 0, 0.5)                # Feature 2
  X3 <- runif(n_samples, 0, 0.8)                # Feature 3
@@ -211,7 +223,7 @@ set.seed(42)
  y <- X %*% beta + rnorm(n_samples, mean = 0, sd = 0.4)
  data <- data.frame(X1 = X1, X2 = X2, X3 = X3, y = y)
 
- # Fit a linear regression model
+ # Fit a linear regression model using lm
  model <- lm(y ~ ., data = data)
  print("lm output")
  print(coef(model))
@@ -222,14 +234,14 @@ set.seed(42)
  }
 # Apply Beta-NGD Optimization
 result <- beta_NGD(
-  c(4, 2, 3, 2),
-  c(0.003, 0.007, 0.005, 0.007),
-  c(0.001, 0.002, 0.003, 0.004),
-  5000,
-  f_value
+  c(4, 2, 3, 2),                          #initial point
+  c(0.003, 0.007, 0.005, 0.007),          #eta
+  c(0.001, 0.002, 0.003, 0.004),          #Gamma
+  5000,                                   #no of iterations
+  f_value                                 #Linear regression objective function 
  )
 
- f_array <- result$f_array
+ f_array <- result$f_array               #Extracting output
  optimum <- result$optimum
  print("Beta_NGD result")
  print(optimum)
@@ -240,44 +252,60 @@ result <- beta_NGD(
    Value = f_array
  )
  ggplot(f_data, aes(x = Index, y = Value)) +
-   geom_line(color = "blue") +          # Line connecting points
+   geom_line(color = "blue") +          
    labs(title = "RSS vs Iterations",
         x = "Iterations",
         y = "RSS") +
    theme_minimal() +
-   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+   theme(plot.title = element_text(hjust = 0.5))  
 ```
 
-## Observation: 
-Both lm result and our algorithm result are pretty close.
+#### Observation:
 
-### Beta_NGD optimum:
+Both the results from the lm function and our algorithm are quite
+similar. However, our algorithm achieves this without relying on any
+model assumptions.
 
-This algorithm starts with some *fixed* initial values based on our
+### Beta_NGD_optimum:
+
+This algorithm starts with some **fixed** initial values based on our
 function and theoritical result ensures that this algorithm will
 converge much faster than our previous random initialisation function.
 
-### Simple getting start example:
+#### Getting Started: A Simple Example
+
 ```{r}
-f <- function(x) sum(x^2)
-initial_point <- 1.5
-D <- 10
-eigen_max <- 2
+f <- function(x) sum(x^2)          #Defining the same norm function
+
+initial_point <- 1.5               #Initial point to start
+
+D <- 10                           #Distance between optimal point and initial point 
+                                  #Start with large values as optimal is unknown to user 
+
+eigen_max <- 2                    #Max eigenvalue of the hessian matrix
+                                  #Double derivative of x^2 gives 2
+#Run our algorithm with these initial values
 beta_NGD_optimal_point <- beta_NGD_optimum (initial_point, D, eigen_max, epsilon = 0.1, f)
 print(beta_NGD_optimal_point$optimum)
 ```
 
-### Multiple Logistic Regression Example:
+#### Observations:
 
-```{r}
-# Logistic regression example with Beta-NGD
+If we observe the array or print the objective function value over
+iterations, we can conclude that our beta_NGD_optimum is converging more
+rapidly to optimal point.
+
+### Multiple Logistic Regression using beta_NGD_optimum
+
+```{r,fig.width=7, fig.height=4}
+ # Logistic regression with Beta_NGD_optimum
  # Set random seed for reproducibility
- set.seed(501)
+ set.seed(213)
 
- # Generate synthetic data for logistic regression
+ # Generating data for logistic regression
  n <- 1000  # Number of data points
  d <- 5     # Number of features
- X <- matrix(rnorm(n * d), n, d)  # Generate random features
+ X <- matrix(rnorm(n * d), n, d)  # random features
  # Generate binary labels with a true beta
  true_beta <- c(1, 2, 3, 4, 5)
  prob <- 1 / (1 + exp(-X %*% true_beta))
@@ -292,16 +320,16 @@ print(beta_NGD_optimal_point$optimum)
 
  # Initialize parameters
  initial_point <- c(2, 1, 4, 3, 6)
- D <- 10
- Hessian <- t(X) %*% X
+ D <- 10     
+ Hessian <- t(X) %*% X               
  eigenvalues <- eigen(Hessian)$values
- eigen_max <- 0.25 * max(eigenvalues)
+ eigen_max <- 0.25 * max(eigenvalues)      #maximum eigenvalues of hessian matrix
 
- # Run the beta_NGD_optimum function
+ # Run the beta_NGD_optimum function 
  result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
  point <- result$optimum
  f_array <- result$f_array
- print("Estimated parameters using beta_NGD:")
+ print("Estimated parameters using beta_NGD_optimum:")
  print(point)
  # Compare with logistic regression solution from glm for verification
  glm_fit <- glm(y ~ X - 1, family = binomial)  # Fit logistic regression without intercept
@@ -317,30 +345,34 @@ print(beta_NGD_optimal_point$optimum)
  # Plot negative log-likelihood vs iterations using ggplot2
  library(ggplot2)
  ggplot(f_data, aes(x = Index, y = Value)) +
-   geom_line(color = "blue") +           # Line connecting points
+   geom_line(color = "blue") +          
    labs(title = "Negative log-likelihood vs Iterations",
         x = "Iterations",
         y = "Negative log-likelihood") +
    theme_minimal() +
-   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+   theme(plot.title = element_text(hjust = 0.5))  
 
 ```
+
+#### Observation:
+
+We can see that lm output and our output are pretty close and also the
+algorithm is converging pretty first.
 
 ### α-Strongly Convex and β-Smooth Functions:
 
 We demonstrate an improved convergence rate for functions that are both
 **α-strongly convex** and **β-smooth**. In this scenario, we leverage
-β-NGD, which is optimal for β-smooth convex functions,
-as a black-box subroutine to develop an efficient algorithm for this
-specialized setting.
+β-NGD, which is optimal for β-smooth convex functions, as a black-box
+subroutine to develop an efficient algorithm for this specialized
+setting.
 
-Our proposed method, **(α, β)-NGD** , follows a
-**phase-wise iterative optimization** approach. Within each phase,
-beta_NGD is employed as a black box to identify an
-$\epsilon_k$-optimal point, where $\epsilon_k$ decreases exponentially
-across phases (starting with $\epsilon_1 = 1$). The optimization process
-for the $(k+1)$-th phase is **warm-started** using the optimizer
-returned by the previous phase.
+Our proposed method, **(α, β)-NGD** , follows a **phase-wise iterative
+optimization** approach. Within each phase, beta_NGD is employed as a
+black box to identify an $\epsilon_k$-optimal point, where $\epsilon_k$
+decreases exponentially across phases (starting with $\epsilon_1 = 1$).
+The optimization process for the $(k+1)$-th phase is **warm-started**
+using the optimizer returned by the previous phase.
 
 This iterative framework ensures faster convergence by combining the
 strong convexity property of the objective function with the efficient
@@ -349,13 +381,14 @@ scenarios requiring both precision and efficiency.
 
 #### Norm Function Example:
 
-As the objective function of simple norm calculation of a vector is α-Strongly
-Convex and β-Smooth, so we can use our algorithm for this. We will run our algorithm
-on this.
+As the objective function of simple norm calculation of a vector is
+α-Strongly Convex and β-Smooth, so we can use our algorithm for this. We
+will run our algorithm on this.
 
 ```{r}
-f <- function(x) sum(x^2)  # Example norm function
-
+ # norm function
+ f <- function(x) sum(x^2)  
+                            
  # Set parameters
  initial_point <- c(1, 1)
  alpha <- 0.1
@@ -368,14 +401,21 @@ f <- function(x) sum(x^2)  # Example norm function
  print(result)
 ```
 
-#### Example 3: 
-We will change our dimension and see effects of our plots. Here is the plot for $$d=2,3,4,5$$
+#### Observation:
 
-```{r}
+We can see the optimal value is close to 0, as expected but this time,
+much faster.
+
+#### Effects of Linear Regression as no of features or dimension(d) increases:
+
+We will change our dimension and see effects of our plots. Here is the
+plot for $$d=2,3,4,5$$
+
+```{r,fig.width=7, fig.height=6}
 library(ggplot2)
 
-set.seed(42)
-epsilon <- 0.1
+set.seed(345)
+epsilon <- 0.1       #Fixing error bound
 
 # Function to calculate RSS
 RSS <- function(beta, X, y) {
@@ -383,7 +423,7 @@ RSS <- function(beta, X, y) {
 }
 
 
-# Generate data for multiple scenarios of beta length
+# Generate data for multiple scenarios of beta length or dimension
 n_samples <- 50
 I <- rep(1, n_samples)
 scenarios <- list(
@@ -409,6 +449,7 @@ X_list <- list(
 )
 T_max=0
 f_data_list <- list()
+#initialsing the parameter
 for (scenario in names(scenarios)) {
   X <- X_list[[scenario]]
   beta <- scenarios[[scenario]]
@@ -425,6 +466,7 @@ for (scenario in names(scenarios)) {
   
   # Generate synthetic data
   X <- X_list[[scenario]]
+  #Generating response y
   y <- X %*% beta + rnorm(n_samples, mean = 0, sd = 0.4)
   
   # Compute RSS values
@@ -434,7 +476,9 @@ for (scenario in names(scenarios)) {
   eta= sqrt(epsilon)/(20*sqrt(d*B))
   D= sum((beta-initial_point)^2)+1
   T= T_max
-  gamma= (epsilon/B)^(3/2)/(240*sqrt(2)*d*(D+eta*T)^2*sqrt(log(480*sqrt(B*d)*(D+ eta*T)/sqrt(2*epsilon))))
+  gamma = (epsilon / B)^(3 / 2) / (240 * sqrt(2) * d * (D + eta * T)^2 * 
+         sqrt(log(480 * sqrt(B * d) * (D + eta * T) / sqrt(2 * epsilon))))
+
   f= function(beta){return(RSS(beta, X, y))}
   f_array <- beta_NGD(initial_point, eta, gamma, T, f)$f_array
   
@@ -454,7 +498,7 @@ f_data_combined <- do.call(rbind, f_data_list)
 # Plotting
 print(ggplot(f_data_combined, aes(x = Iteration, y = RSS, color = Scenario)) +
         geom_line() +
-        labs(title = "RSS vs Iterations for Different Beta Lengths",
+        labs(title = "RSS vs Iterations for Different Beta Lengths or dimension",
              x = "Iterations",
              y = "RSS",
              color = "Scenario") +
@@ -463,15 +507,15 @@ print(ggplot(f_data_combined, aes(x = Iteration, y = RSS, color = Scenario)) +
 
 ```
 
-## Observations: 
+## Observations:
 
 ### Algorithm:
 
 #### Convergence Guarnatee:
 
 Consider $f$ to be **α-strongly convex** and **β-smooth**. Using
- $(\alpha, \beta)$-NGD, we achieve an improved convergence
-rate. Specifically, this algorithm ensures:
+$(\alpha, \beta)$-NGD, we achieve an improved convergence rate.
+Specifically, this algorithm ensures:
 
 $$
 \mathbb{E}[f(\tilde{x})] - f(x^*) \leq \epsilon,
@@ -483,10 +527,18 @@ $$
 O\left(d\frac{\beta}{\alpha}\left(\log_2\frac{\alpha}{\epsilon} + \|x_1 - x^*\|^2\right)\right),
 $$
 
-where: - $d$: Dimension of the problem, - $\beta$: Smoothness
-constant, - $\alpha$: Strong convexity constant, - $\epsilon$: Desired
-optimization accuracy, - $\|x_1 - x^*\|^2$: Squared distance between the
-initial point $x_1$ and the optimal point $x^*$.
+where: -
+
+-   $d$: Dimension of the problem
+
+-    $\beta$: Smoothness constant
+
+-    $\alpha$: Strong convexity constant
+
+-    $\epsilon$: Desired optimization accuracy
+
+-    $\|x_1 - x^*\|^2$: Squared distance between the initial point $x_1$
+    and the optimal point $x^*$.
 
 This result demonstrates that the $(\alpha, \beta)$-NGD algorithm
 leverages the strong convexity property to **significantly** reduce the
@@ -516,20 +568,35 @@ introduce incorrect signs where the oracle fails.
 
 #### Resampling Trick
 
-To address this issue, the paper introduces a 'resampling-trick'. This approach
-effectively mitigates the impact of noise in the feedback by ensuring
-more reliable comparisons through repeated queries. The algorithm
-performs multiple resamples for each pairwise query and aggregates the
-feedback to estimate the true sign, reducing the impact of incorrect
-comparisons caused by noise. We use our this sign_recovery function for
-this.
+To address this issue, the paper introduces a 'resampling-trick'. This
+approach effectively mitigates the impact of noise in the feedback by
+ensuring more reliable comparisons through repeated queries. The
+algorithm performs multiple resamples for each pairwise query and
+aggregates the feedback to estimate the true sign, reducing the impact
+of incorrect comparisons caused by noise. We use our this sign_recovery
+function for this.
 
 ### Algorithm:
 
+### Getting Started: A Simple Example
+
+```{r}
+# Defining a function
+f <- function(x) sum(x^4-x)
+# Perform sign recovery
+x <- c(1,2)         #first point
+y <- c(3,4)         #second point
+delta <- 0.01       #accuracy bound
+signRecovery(x , y , delta , f = f)
+```
+
+#### Observation: 
+It's returning true sign as exapected by doing resampling multiple times.
+
 ### Our Extension:
 
-Now, we have made some extensions of our work. Firstly, we will show for the
-class of functions which satisfy the famous PL inequality.
+Now, we have made some extensions of our work. Firstly, we will show for
+the class of functions which satisfy the famous PL inequality.
 
 #### Polyak-Łojasiewicz (PL) Inequality
 
@@ -550,20 +617,23 @@ The PL inequality is less restrictive than strong convexity and applies
 to a broader class of functions. It guarantees that gradient-based
 optimization methods converge to the minimum value under this condition.
 This makes it a valuable property for analyzing optimization algorithms.
-Here is one example demontrating this case. This function is neither convex
-nor concave but satisfies PL inequality. 
+Here is one example demontrating this case. This function is neither
+convex nor concave but satisfies PL inequality.
 
 ### An Example:
 
-```{r}
+```{r, fig.width=7, fig.height=5}
 # Define the function f(x) = x^2 + 3 * sin^2(x)
 f_value <- function(x) {
   return(x^2 + 3 * sin(x)^2)
 }
 
+#Initialize the parameters
 initial_point <- 5
 D <- 25
 eigen_max <- 8
+
+#Caling beta_NGD_optimum function
 result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1,f_value)
 
 # Print the result
@@ -579,24 +649,26 @@ f_data <- data.frame(
 library(ggplot2)
 # Plot using ggplot2
 print(ggplot(f_data, aes(x = Index, y = Value)) +
-        geom_line(color = "blue") +           # Line connecting points
-        # geom_point(color = "red", size = 0.0001) + # Points on the line
+        geom_line(color = "blue") +           
+        # geom_point(color = "red", size = 0.0001) + 
         labs(title = "function_value vs Iterations",
              x = "Iterations",
              y = "function value") +
         theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5)))  # Center the title
+        theme(plot.title = element_text(hjust = 0.5)))  
 
 
 ```
 
 #### Observation:
-From the plot,we can see that it is converging to true optimum pretty first.
+
+From the plot,we can see that it is converging to true optimum pretty
+first. This function satisfies the condition of PL inequality.
 
 ### General Non_Convex Setup(Neural Network Optimization):
 
 Now we will go for the general non-convex setup. First thing that comes
-to our mind for most general setup is Neural Network. I will use a two 
+to our mind for most general setup is Neural Network. I will use a two
 layered neural network.
 
 Consider a wide 2-layer neural network defined as $y = f_\theta(x)$,
@@ -639,15 +711,16 @@ the dueling feedback provided by the user. The learner iteratively
 updates the weights $w$ based on preference feedback to converge toward
 an optimal set of weights.
 
-#### Example:
+####Getting Started: A Simple Example
 
-```{r}
+```{r plot-loss-iterations, fig.width=7, fig.height=5}
 set.seed(324)
 # Generate synthetic data
  n_samples <- 200
  n_features <- 6
  n_hidden <- 20
 
+ #Generating the data matrix and weights
  X <- matrix(rnorm(n_samples * n_features), n_samples, n_features)
  true_weights <- list(
    W1 = matrix(runif(n_features * n_hidden), n_features, n_hidden),
@@ -655,9 +728,9 @@ set.seed(324)
    W2 = matrix(runif(n_hidden), n_hidden, 1),
    b2 = runif(1)
  )
- hidden_layer <- 1 / (1 + exp(-(X %*% true_weights$W1 + true_weights$b1)))
- output_layer <- hidden_layer %*% true_weights$W2 + true_weights$b2
- y <- rowSums(output_layer)
+ hidden_layer <- 1 / (1 + exp(-(X %*% true_weights$W1 + true_weights$b1)))   #hidden layer
+ output_layer <- hidden_layer %*% true_weights$W2 + true_weights$b2          #output layer
+ y <- rowSums(output_layer)                                                  #generating y
 
  # Initialize neural network weights
  initial_weights <- list(
@@ -690,11 +763,12 @@ set.seed(324)
  )
 ```
 
-
+#### Observation:
+Loss is decreasing to 0 rapidly. So, also in this general non-optimization case, our algorithm is working.
 ### Conclusion:
 
-We observed that our original two cases in the paper are not limited 
-only to simple convex function.It can be seen from the plots that the 
+We observed that our original two cases in the paper are not limited
+only to simple convex function.It can be seen from the plots that the
 algorithms are performing pretty well for non-convex case.
 
 ### Reference:
