@@ -21,8 +21,10 @@ must take a numeric vector as input and return a numeric value.}
 }
 \value{
 A list with the following components:
-\item{optimum}{A numeric vector representing the best point found after \code{T} iterations.}
-\item{f_array}{A numeric vector containing the best function value observed at each iteration.}
+\itemize{
+\item{optimum:} {A numeric vector representing the best point found after \code{T} iterations.}
+\item{f_array:} {A numeric vector containing the best function value observed at each iteration.}
+}
 }
 \description{
 Implements a normalized gradient descent algorithm based on preference (dueling) feedback.
@@ -30,6 +32,7 @@ The function attempts to find an optimal point in a given space by iteratively u
 the initial point in the direction estimated from comparison feedback.
 }
 \examples{
+# Linear regression example with Beta-NGD
 library(ggplot2)
 # Set random seed for reproducibility
 set.seed(42)
@@ -49,6 +52,7 @@ data <- data.frame(X1 = X1, X2 = X2, X3 = X3, y = y)
 
 # Fit a linear regression model
 model <- lm(y ~ ., data = data)
+print("lm output")
 print(coef(model))
 
 # Define the objective function (Residual/error Sum of Squares)
@@ -68,6 +72,8 @@ result <- beta_NGD(
 # Extracting output
 f_array <- result$f_array
 optimum <- result$optimum
+print("Estimated parameters using beta_NGD:")
+print(optimum)
 
 # data frame created
 f_data <- data.frame(

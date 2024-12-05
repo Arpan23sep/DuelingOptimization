@@ -12,12 +12,15 @@
 #' @param f A convex function representing the objective function to be minimized. This function
 #'   must take a numeric vector as input and return a numeric value.
 #' @return A list with the following components:
-#'   \item{optimum}{A numeric vector representing the best point found after `T` iterations.}
-#'   \item{f_array}{A numeric vector containing the best function value observed at each iteration.}
+#'   \itemize{
+#'      \item{optimum:} {A numeric vector representing the best point found after `T` iterations.}
+#'      \item{f_array:} {A numeric vector containing the best function value observed at each iteration.}
+#'    }
 #' @import ggplot2
 #' @export
 #'
 #' @examples
+#' # Linear regression example with Beta-NGD
 #' library(ggplot2)
 #' # Set random seed for reproducibility
 #' set.seed(42)
@@ -37,6 +40,7 @@
 #'
 #' # Fit a linear regression model
 #' model <- lm(y ~ ., data = data)
+#' print("lm output")
 #' print(coef(model))
 #'
 #' # Define the objective function (Residual/error Sum of Squares)
@@ -56,6 +60,8 @@
 #' # Extracting output
 #' f_array <- result$f_array
 #' optimum <- result$optimum
+#'print("Estimated parameters using beta_NGD:")
+#'print(optimum)
 #'
 #' # data frame created
 #' f_data <- data.frame(
@@ -130,12 +136,14 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' @param f A function representing the objective function to be minimized. This function
 #'   must take a numeric vector as input and return a numeric value.
 #' @return A list with the following components:
-#'   \item{optimum}{A numeric vector representing the best point found.}
-#'   \item{f_array}{A numeric vector containing the best function value observed at each iteration.}
+#'   \itemize{
+#'     \item{optimum:} {A numeric vector representing the best point found.}
+#'     \item{f_array:} {A numeric vector containing the best function value observed at each iteration.}
+#'    }
 #' @export
 #'
 #' @examples
-#' # Logistic regression example with Beta-NGD
+#' # Logistic regression example with Beta_NGD_optimum
 #' # Set random seed for reproducibility
 #' set.seed(501)
 #'

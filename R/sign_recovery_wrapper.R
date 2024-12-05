@@ -1,7 +1,6 @@
 #' Perform Sign Recovery with a Objective Function
 #'
-#' This function serves as a wrapper for the C++ function `signRecovery_c`. It performs
-#' sign recovery by repeatedly comparing two points using the provided objective function.
+#'  It performs sign recovery by repeatedly comparing two points using the provided objective function.
 #'
 #' @useDynLib DuelingOptimization
 #' @import Rcpp

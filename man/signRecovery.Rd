@@ -20,8 +20,7 @@ must take a numeric vector as input and return a scalar numeric value.}
 An integer: +1 if the recovered sign is positive, -1 otherwise.
 }
 \description{
-This function serves as a wrapper for the C++ function \code{signRecovery_c}. It performs
-sign recovery by repeatedly comparing two points using the provided objective function.
+It performs sign recovery by repeatedly comparing two points using the provided objective function.
 }
 \examples{
 # Define an objective function

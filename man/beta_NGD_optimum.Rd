@@ -20,15 +20,17 @@ must take a numeric vector as input and return a numeric value.}
 }
 \value{
 A list with the following components:
-\item{optimum}{A numeric vector representing the best point found.}
-\item{f_array}{A numeric vector containing the best function value observed at each iteration.}
+\itemize{
+\item{optimum:} {A numeric vector representing the best point found.}
+\item{f_array:} {A numeric vector containing the best function value observed at each iteration.}
+}
 }
 \description{
 Computes the parameters for normalized gradient descent based on the strong convexity
 and smoothness properties of the objective function.
 }
 \examples{
-# Logistic regression example with Beta-NGD
+# Logistic regression example with Beta_NGD_optimum
 # Set random seed for reproducibility
 set.seed(501)
 
