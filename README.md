@@ -6,15 +6,31 @@ DuelingOptimization is an R package that implements algorithms for convex optimi
 
 This package includes four primary functions:
 
--   beta_NGD: Implements a normalized gradient descent algorithm for general β-smooth convex functions using binary feedback.
+-   `beta_NGD`: Implements a normalized gradient descent algorithm for general β-smooth convex functions using binary feedback.
 
--   beta_NGD_optimum: Computes the parameters for normalized gradient descent based on the strong convexity and smoothness properties of the objective function.
+-   `beta_NGD_optimum`: Computes the parameters for normalized gradient descent based on the strong convexity and smoothness properties of the objective function.
 
--   alpha_beta_NGD: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence.
+-   `alpha_beta_NGD`: Extends the gradient descent to strongly convex and β-smooth functions, achieving faster convergence.
 
--   signRecovery: It performs sign recovery by repeatedly comparing(resampling) two points using the provided objective function. The original function is written in RCPP.
+-   `signRecovery`: It performs sign recovery by repeatedly comparing(resampling) two points using the provided objective function. The original function is written in RCPP.
 
--   The core of these algorithms lies in estimating gradient directions based on noisy, preference-based comparisons. This enables optimization in scenarios where only binary feedback is available for queried pairs of points.
+The core of these algorithms lies in estimating gradient directions based on noisy, preference-based comparisons. This enables optimization in scenarios where only binary feedback is available for queried pairs of points.
+
+### Installation Instructions
+
+You can install the **DuelingOptimization** package directly from GitHub. Follow the steps below:
+
+1.  Ensure you have the `devtools` package installed. If not, install it using:
+
+`install.packages("devtools")`
+
+2.  Install the **DuelingOptimization** package from GitHub:
+
+`devtools::install_github("Arpan23sep/DuelingOptimization")`
+
+3.  To include vignettes, which provide detailed guidelines and documentation for the package functions, use the following command instead:
+
+`devtools::install_github("Arpan23sep/DuelingOptimization", build_vignettes = TRUE, force = TRUE)`
 
 ## Usage
 
@@ -36,17 +52,17 @@ Implements a normalized gradient descent algorithm based on preference (dueling)
 
 `result <- beta_NGD(initial_point, eta, gamma, T, f)`
 
-#### Return:
+#### Return
 
 A list with the following components:
 
-optimum: A numeric vector representing the best point found after T iterations.
+-   optimum: A numeric vector representing the best point found after T iterations.
 
-f_array: A numeric vector containing the best function value observed at each iteration.
+-   f_array: A numeric vector containing the best function value observed at each iteration.
 
 #### Example
 
-`#Define an initial point and parameters`
+`#Define an initial point and the parameters`
 
 `initial_point <- c(1, 1)`
 
@@ -58,7 +74,7 @@ f_array: A numeric vector containing the best function value observed at each it
 
 `f <- function(x) sum(x^2)`
 
-`optimal_point <- beta_NGD(initial_point, eta, gamma, T)`
+`optimal_point <- beta_NGD(initial_point, eta, gamma, T, f)`
 
 `print(optimal_point)`
 
@@ -66,17 +82,17 @@ f_array: A numeric vector containing the best function value observed at each it
 
 This function extends *beta_NGD* for optimizing *α-strongly convex* and *β-smooth* functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
 
-``` result <- alpha_beta_NGD(``initial_point, alpha, beta, D, tolerance, f``) ```
+`result <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)`
 
 #### Arguments
 
 -   initial_point: A numeric vector for the starting point.
--   alpha: The strong convexity parameter.
--   beta: The smoothness parameter.
+-   alpha: The strong convexity parameter. Smallest eigenvalue of the hessian matrix.
+-   beta: The smoothness parameter. Largest eigenvalue of the hessian matrix.
 -   tolerance: Desired tolerance for convergence.
--   f: A convex function representing the objective function to be minimized
+-   f: A convex function representing the objective function to be minimized.
 
-#### Return:
+#### Return
 
 The near-optimal decision point for the convex function.
 
@@ -108,7 +124,7 @@ Computes the parameters for normalized gradient descent based on the strong conv
 
 `result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)`
 
-### Arguments:
+### Arguments
 
 -   initial_point: A numeric vector representing the d-dimensional initial point.
 
@@ -120,7 +136,7 @@ Computes the parameters for normalized gradient descent based on the strong conv
 
 -   f: A function representing the objective function to be minimized. This function must take a numeric vector as input and return a numeric value.
 
-#### Return:
+#### Return
 
 A list with the following components:
 
@@ -140,7 +156,7 @@ A list with the following components:
 
 `f <- function(x) sum(x^2)`
 
-`optimal_point <- beta_NGD(initial_point, D, eigen_max, epsilon = 0.1, f)`
+`optimal_point <-beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)`
 
 ### 4. NN_optimization
 
@@ -148,21 +164,21 @@ This function optimizes a two-layer neural network with sigmoid activation using
 
 `result <- NN_optimization(initial_weights, X, y, eta, gamma, T)`
 
-#### Arguments:
+#### Arguments
 
 -   initial_weights: A list containing the initial weights and biases of the neural network:
 
--   W1: A matrix of dimensions n_features x n_hidden representing input to hidden layer weights.
+    -   W1: A matrix of dimensions n_features x n_hidden representing input to hidden layer weights. n_features is the number of features in the input dataset, and n_hidden is the number of hidden layer neurons.
 
--   b1: A vector of size n_hidden representing biases for the hidden layer.
+    -   b1: A vector of size n_hidden representing biases for the hidden layer.
 
--   W2: A matrix of dimensions n_hidden x n_output representing hidden to output layer weights.
+    -   W2: A matrix of dimensions n_hidden x n_output representing hidden to output layer weights. n_output is typically 1 for regression problems or the number of classes for classification problems.
 
--   b2: A scalar representing the bias for the output layer.
+    -   b2: A scalar representing the bias for the output layer.
 
--   X: A numeric matrix of size n_samples x n_features representing input features.
+-   X: A numeric matrix of size n_samples x n_features representing input features. n_samples is the number of observations or rows in the dataset, and n_features is the number of columns or features in the input dataset.
 
--   y: A numeric vector of size n_samples representing the response variable.
+-   y: A numeric vector of size n_samples representing the response variable. n_samples should match the number of rows in X.
 
 -   eta: A numeric value representing the learning rate.
 
@@ -170,7 +186,7 @@ This function optimizes a two-layer neural network with sigmoid activation using
 
 -   T: An integer representing the maximum number of iterations for optimization.
 
-#### Return:
+#### Return
 
 A list containing:
 
@@ -178,9 +194,13 @@ A list containing:
 
 -   loss_array: A numeric vector containing the loss values over iterations.
 
+#### Example
+
+Refer to the vignette file for detailed examples and explanations.
+
 ### 5.signRecovery
 
-This function serves as a wrapper for the C++ function signRecovery_c. It performs sign recovery by repeatedly comparing two points using the provided objective function.
+It performs sign recovery by repeatedly comparing two points using the provided objective function.
 
 `result <- signRecovery(x, y, delta, f)`
 
@@ -194,7 +214,7 @@ This function serves as a wrapper for the C++ function signRecovery_c. It perfor
 
 `f: A function representing the objective function.`
 
-#### Return:
+#### Return
 
 An integer: +1 if the recovered sign is positive, -1 otherwise.
 
@@ -206,18 +226,12 @@ An integer: +1 if the recovered sign is positive, -1 otherwise.
 
 `signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)`
 
-### Installation Instruction
-
-You can install the **DuelingOptimization** package directly from GitHub. First, make sure you have the **`devtools`** package installed:
-
-`install.packages("devtools")`
-
-Then, you can install **DuelingOptimization** from GitHub:
-
-`devtools::install_github("Arpan23sep/DuelingOptimization")`
-
 ### References
 
 If you use this package in your research, please cite the original paper:
 
 Saha, A., Koren, T., & Mansour, Y. (2021). Dueling Convex Optimization. Proceedings of the 38th International Conference on Machine Learning.
+
+### Details:
+
+For more information on the **DuelingOptimization** package, refer to the package documentation or included vignettes. If you have any questions or need further assistance, please feel free to contact the author.
