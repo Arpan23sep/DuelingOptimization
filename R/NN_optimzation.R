@@ -7,12 +7,16 @@
 #' @param initial_weights A list containing the initial weights and biases of the neural network:
 #'   \itemize{
 #'     \item \code{W1}: A matrix of dimensions \code{n_features x n_hidden} representing input to hidden layer weights.
+#'      \emph{(n_features is the number of features in the input dataset, and n_hidden is the number of hidden layer neurons.)}
 #'     \item \code{b1}: A vector of size \code{n_hidden} representing biases for the hidden layer.
 #'     \item \code{W2}: A matrix of dimensions \code{n_hidden x n_output} representing hidden to output layer weights.
+#'      \emph{(n_output is typically 1 for regression problems or the number of classes for classification problems.)}
 #'     \item \code{b2}: A scalar representing the bias for the output layer.
 #'   }
 #' @param X A numeric matrix of size \code{n_samples x n_features} representing input features.
+#'    \emph{(n_samples is the number of observations or rows in the dataset, and n_features is the number of columns or features in the input dataset.)}
 #' @param y A numeric vector of size \code{n_samples} representing the response variable.
+#'  \emph{(n_samples should match the number of rows in \code{X}.)}
 #' @param eta A numeric value representing the learning rate.
 #' @param gamma A numeric value representing the perturbation parameter.
 #' @param T An integer representing the maximum number of iterations for optimization.
@@ -25,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' set.seed(42)
+#' set.seed(567)
 #'
 #' # Generate data
 #' n_samples <- 100
@@ -40,6 +44,7 @@
 #'   W2 = matrix(runif(n_hidden), n_hidden, 1),
 #'   b2 = runif(1)
 #' )
+#' #Sigmoid activation
 #' hidden_layer <- 1 / (1 + exp(-(X %*% true_weights$W1 + true_weights$b1)))
 #' output_layer <- hidden_layer %*% true_weights$W2 + true_weights$b2
 #' # Generate y
@@ -68,12 +73,24 @@
 #'   T = T
 #' )
 #'
-#' # Plot the loss over iterations
-#' plot(
-#'  result$loss_array, type = "l",
-#'  main = "Loss Over Iterations",
-#'  xlab = "Iterations", ylab = "Loss"
-#' )
+#' library(ggplot2)
+#' # Convert loss array to a data frame
+#' loss_data <- data.frame(
+#'  Iterations = seq_along(result$loss_array),
+#'  Loss = result$loss_array
+#')
+#' # Create the ggplot
+#' ggplot(loss_data, aes(x = Iterations, y = Loss)) +
+#'  geom_line(color = "blue") +
+#'  labs(
+#'    title = "Loss Over Iterations",
+#'    x = "Iterations",
+#'    y = "Loss"
+#'  ) +
+#'  theme_classic() +
+#'  theme(
+#'    plot.title = element_text(hjust = 0.5)
+#'  )
 
 NN_optimization <- function(initial_weights, X, y, eta, gamma, T) {
   # Input checks
@@ -155,6 +172,8 @@ NN_optimization <- function(initial_weights, X, y, eta, gamma, T) {
 
   # Perform beta_NGD using the defined loss function
   initial_point <- flatten_weights(initial_weights)
+
+  #Calling beta_NGD
   result <- beta_NGD(
     initial_point = initial_point,
     eta = eta,
