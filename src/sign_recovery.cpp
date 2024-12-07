@@ -22,7 +22,6 @@ int signRecovery_c(NumericVector x, NumericVector y, double delta, Function f) {
   while (true) {
     t += 1;
 
-    // Inline implementation of compare_points_c
     double f_x = as<double>(f(x));
     double f_y = as<double>(f(y));
     int ot = (f_x < f_y) ? 1 : -1;

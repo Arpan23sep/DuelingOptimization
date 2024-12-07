@@ -90,6 +90,7 @@ This function extends *beta_NGD* for optimizing *α-strongly convex* and *β-smo
 -   alpha: The strong convexity parameter. Smallest eigenvalue of the hessian matrix.
 -   beta: The smoothness parameter. Largest eigenvalue of the hessian matrix.
 -   tolerance: Desired tolerance for convergence.
+-   D: A numeric value representing the diameter of the search space.
 -   f: A convex function representing the objective function to be minimized.
 
 #### Return
@@ -158,7 +159,35 @@ A list with the following components:
 
 `optimal_point <-beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)`
 
-### 4. NN_optimization
+### 4.signRecovery
+
+It performs sign recovery by repeatedly comparing two points using the provided objective function.
+
+`result <- signRecovery(x, y, delta, f)`
+
+#### Arguments:
+
+x: A numeric vector representing the first point.
+
+y: A numeric vector representing the second point.
+
+delta: A positive numeric value specifying the confidence parameter.
+
+f: A function representing the objective function.
+
+#### Return
+
+An integer: +1 if the recovered sign is positive, -1 otherwise.
+
+#### Example
+
+`f <- function(x) sum(x^3-x)`
+
+`# Perform sign recovery`
+
+`signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)`
+
+### 5. NN_optimization
 
 This function optimizes a two-layer neural network with sigmoid activation using normalized gradient descent. The weights of the neural network are flattened for optimization and converted back to their original structure after optimization.
 
@@ -198,40 +227,12 @@ A list containing:
 
 Refer to the vignette file for detailed examples and explanations.
 
-### 5.signRecovery
-
-It performs sign recovery by repeatedly comparing two points using the provided objective function.
-
-`result <- signRecovery(x, y, delta, f)`
-
-#### Arguments:
-
-`x: A numeric vector representing the first point.`
-
-`y: A numeric vector representing the second point.`
-
-`delta: A positive numeric value specifying the confidence parameter.`
-
-`f: A function representing the objective function.`
-
-#### Return
-
-An integer: +1 if the recovered sign is positive, -1 otherwise.
-
-#### Example
-
-`f <- function(x) sum(x^3-x)`
-
-`# Perform sign recovery`
-
-`signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)`
-
 ### References
 
 If you use this package in your research, please cite the original paper:
 
 Saha, A., Koren, T., & Mansour, Y. (2021). Dueling Convex Optimization. Proceedings of the 38th International Conference on Machine Learning.
 
-### Details:
+### Details
 
 For more information on the **DuelingOptimization** package, refer to the package documentation or included vignettes. If you have any questions or need further assistance, please feel free to contact the author.
