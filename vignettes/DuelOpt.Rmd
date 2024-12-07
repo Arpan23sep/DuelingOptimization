@@ -48,7 +48,7 @@ alpha_beta_NGD: Extends the gradient descent to strongly convex and
 
 signRecovery: Performs sign recovery by repeatedly comparing (resampling) two points using a specified objective function. The implementation of this function utilizes RCPP for improved performance.
 
-### Mathematical problem:
+### Mathematical problem
 
 This work addresses the challenge of convex optimization with preference
 (dueling) feedback, where the learner only observes noisy binary
@@ -100,7 +100,7 @@ This package provides efficient algorithms to achieve this objective by
 leveraging dueling feedback (pairwise comparisons) and iterative
 optimization techniques.
 
-### Noiseless Case:
+### Noiseless Case
 
 Here we will analyze the case of "no-noise" i.e upon querying any duel
 (x,y) the learner gets access to its true sign feedback
@@ -108,7 +108,7 @@ $$ 1 (f(x) \geq f(y))$$.Let us first look of our main algorithm for beta
 smooth convex optimization which is based on technique of normalized
 gradient descent.
 
-### Function is beta smooth:
+### Function is beta smooth
 
 A differentiable function $f: \mathbb{R}^d \to \mathbb{R}$ is said to be
 beta-smooth (or $\beta$-smooth, where $\beta > 0$) if its gradient
@@ -119,7 +119,7 @@ $$
 $$
 
 
-#### Convergence Guarantee:
+#### Convergence Guarantee
 
 This theorem ensures that our algorithm will converge. Suppose beta_NGD is run with $$
 \eta = \frac{\sqrt{\epsilon}}{20\sqrt{d\beta}}, \quad 
@@ -128,7 +128,7 @@ This theorem ensures that our algorithm will converge. Suppose beta_NGD is run w
 $$ where $D \geq \|\mathbf{x}_1 - \mathbf{x}^*\|_2$ (an assumed known
 upper bound).
 
-Then Algorithm 1 returns $$
+Then beta_NGD returns $$
 \mathbb{E}[f(\tilde{\mathbf{x}}_{T+1})] - f(\mathbf{x}^*) \leq \epsilon
 $$ with sample complexity $2T_\epsilon$.
 
@@ -149,7 +149,7 @@ optimal_point <- beta_NGD(initial_point, eta, gamma, T,f)
 print(optimal_point$optimum)           #printing the optimum value 
 ```
 
-#### Observation:
+#### Observation
 
 The optimal value obtained is 0, as expected. This aligns with the theoretical minimum of the squared function, which is 0.
 
@@ -211,11 +211,11 @@ result <- beta_NGD(
    theme(plot.title = element_text(hjust = 0.5))  
 ```
 
-#### Observation:
+#### Observation
 
 The results obtained using the lm function and our algorithm are remarkably similar. Notably, our algorithm achieves these results without relying on any underlying model assumptions.
 
-### Beta_NGD_optimum:
+### Beta_NGD_optimum
 
 This algorithm begins with fixed initial values derived from the characteristics of the function. Theoretical results guarantee that this algorithm converges significantly faster compared to the previous method, which relied on random initialization.
 
@@ -236,7 +236,7 @@ beta_NGD_optimal_point <- beta_NGD_optimum (initial_point, D, eigen_max, epsilon
 print(beta_NGD_optimal_point$optimum)
 ```
 
-#### Observations:
+#### Observations
 
 When analyzing the array of objective function values over iterations, it becomes evident that beta_NGD_optimum converges more rapidly to the optimal point compared to the previous algorithm. This highlights the efficiency of the initialization based on theoretical insights.
 
@@ -300,11 +300,11 @@ In this section, we demonstrate the use of the beta_NGD_optimum function for log
 
 ```
 
-#### Observation:
+#### Observation
 
 The outputs from the lm function and our algorithm are remarkably similar, demonstrating the accuracy of our approach. Additionally, the algorithm exhibits fast convergence, highlighting the efficiency of the theoretical initialization strategy.
 
-### α-Strongly Convex and β-Smooth Functions:
+### α-Strongly Convex and β-Smooth Functions
 
 We demonstrate an improved convergence rate for functions that are both
 **α-strongly convex** and **β-smooth**. In this scenario, we leverage
@@ -324,7 +324,7 @@ strong convexity property of the objective function with the efficient
 gradient descent method for β-smooth functions, making it suitable for
 scenarios requiring both precision and efficiency.
 
-#### Norm Function Example:
+#### Norm Function Example
 
 The simple norm calculation of a vector serves as an objective function that is both α-strongly convex and β-smooth. As such, our algorithm is well-suited for this task. Below, we demonstrate the application of our algorithm to this example.
 
@@ -344,11 +344,11 @@ The simple norm calculation of a vector serves as an objective function that is 
  print(result)
 ```
 
-#### Observation:
+#### Observation
 
 The optimal value is close to 0, as expected, but this time, the convergence is achieved much faster compared to previous methods, highlighting the efficiency of the (α, β)-NGD algorithm.
 
-#### Convergence Guarnatee:
+#### Convergence Guarnatee
 
 Consider $f$ to be **α-strongly convex** and **β-smooth**. Using
 $(\alpha, \beta)$-NGD, we achieve an improved convergence rate.
@@ -382,7 +382,7 @@ leverages the strong convexity property to **significantly** reduce the
 number of pairwise comparisons required for achieving a given level of
 accuracy.
 
-#### Effects of Linear Regression as the Number of Features (Dimension d) Increases:
+#### Effects of Linear Regression as the Number of Features (Dimension d) Increases
 
 We analyze the effect of increasing the number of features (d) on our linear regression algorithm's performance. The following plot illustrates the behavior of the algorithm for dimensions $$d=2,3,4,5$$. By observing the trends, we aim to understand how the complexity of the model evolves as the dimensionality increases.
 
@@ -484,7 +484,8 @@ print(ggplot(f_data_combined, aes(x = Iteration, y = RSS, color = Scenario)) +
 
 ```
 
-#### Observations:
+#### Observations
+
 From the plot, we can observe that as the number of features (d) increases, the convergence of the algorithm becomes slower. This is expected because higher dimensions introduce more complexity into the optimization process, requiring more iterations for the algorithm to minimize the residual sum of squares (RSS). However, despite this increased complexity, the algorithm still demonstrates robust convergence behavior across all feature dimensions. This suggests that the algorithm efficiently handles high-dimensional data while maintaining performance.
 
 
@@ -531,10 +532,10 @@ delta <- 0.01       #accuracy bound
 signRecovery(x , y , delta , f = f)
 ```
 
-#### Observation: 
+#### Observation 
 The signRecovery function successfully returns the true sign as expected by leveraging the resampling process multiple times. This demonstrates its effectiveness in mitigating noise and ensuring reliable outcomes in the optimization process.
 
-### Our Extensions:
+### Our Extensions
 
 We extend our approach to demonstrate its applicability to a broader class of functions that satisfy the well-known Polyak-Łojasiewicz (PL) inequality. This extension ensures faster convergence and applicability to non-convex scenarios where the PL inequality holds, thereby broadening the utility of our optimization algorithms.
 
@@ -559,7 +560,7 @@ optimization methods converge to the minimum value under this condition.
 This makes it a valuable property for analyzing optimization algorithms.
 Here is an example demonstrating this case. The chosen function is neither convex nor concave but satisfies the PL inequality.
 
-### An Example:
+### An Example
 
 ```{r, fig.width=7, fig.height=5}
 # Define the function f(x) = x^2 + 3 * sin^2(x)
@@ -572,7 +573,7 @@ initial_point <- 5
 D <- 25
 eigen_max <- 8
 
-#Caling beta_NGD_optimum function
+#Calling beta_NGD_optimum function
 result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon=0.1,f_value)
 
 # Print the result
@@ -599,11 +600,11 @@ print(ggplot(f_data, aes(x = Index, y = Value)) +
 
 ```
 
-#### Observation:
+#### Observation
 
 From the plot, we observe that the algorithm converges rapidly to the true optimum.
 
-### General Non_Convex Setup(Neural Network Optimization):
+### General Non_Convex Setup(Neural Network Optimization)
 
 In this section, we address the general non-convex setup, focusing on one of the most versatile and widely used frameworks: Neural Networks. For demonstration, we consider a two-layered neural network.
 
@@ -644,7 +645,7 @@ loss.
 
 The primary objective is to minimize the loss function $L(w)$ using only
 the dueling feedback provided by the user. The learner then iteratively updates the weights 
-$𝑤$using this feedback, aiming to converge toward an optimal set of weights that minimizes the loss $L(w)$.
+$𝑤$ using this feedback, aiming to converge toward an optimal set of weights that minimizes the loss $L(w)$.
 
 #### Getting Started (NN_optimization): A Simple Example
 
@@ -713,15 +714,15 @@ ggplot(loss_data, aes(x = Iterations, y = Loss)) +
 
 ```
 
-#### Observation:
+#### Observation
 
 The loss is rapidly decreasing toward 0, demonstrating the effectiveness of our algorithm in this general non-convex optimization case. Even in a challenging setup like neural network optimization, the proposed method successfully converges, validating its robustness and applicability to non-convex scenarios.
 
-### Conclusion:
+### Conclusion
 
 Our observations confirm that the original two cases presented in the paper are not confined to simple convex functions. From the plots, it is evident that the algorithms demonstrate strong performance, even in the non-convex case. This showcases the robustness and versatility of the methods, extending their applicability beyond convex optimization to more complex, real-world scenarios.
 
-### Reference:
+### Reference
 
 If you use this package in your research, please cite the original
 paper:
