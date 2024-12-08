@@ -181,6 +181,8 @@ epsilon <- 0.01
 f <- function(x) sum(x^2)
 
 optimal_point <-beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)
+
+print(optimal_point)
 ```
 
 ### 4.signRecovery
