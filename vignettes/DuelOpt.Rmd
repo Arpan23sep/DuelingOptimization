@@ -348,7 +348,7 @@ The simple norm calculation of a vector serves as an objective function that is 
 
 The optimal value is close to 0, as expected, but this time, the convergence is achieved much faster compared to previous methods, highlighting the efficiency of the (α, β)-NGD algorithm.
 
-#### Convergence Guarnatee
+#### Convergence Guarantee
 
 Consider $f$ to be **α-strongly convex** and **β-smooth**. Using
 $(\alpha, \beta)$-NGD, we achieve an improved convergence rate.
