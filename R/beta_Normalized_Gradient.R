@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' # Linear regression example with Beta-NGD
+#' # Linear regression example with beta_NGD
 #' library(ggplot2)
 #' # Set random seed for reproducibility
 #' set.seed(42)
@@ -48,7 +48,7 @@
 #'   sum((y - X %*% beta)^2)
 #' }
 #'
-#' # Apply Beta-NGD Optimization
+#' # Apply beta_NGD Optimization
 #' result <- beta_NGD(
 #'  c(4, 2, 3, 2),
 #'  c(0.003, 0.007, 0.005, 0.007),
@@ -78,6 +78,7 @@
 #'   theme(plot.title = element_text(hjust = 0.5))
 #'
 beta_NGD <- function(initial_point, eta, gamma, T, f) {
+  #Input checks
   if (!is.numeric(T) || T <= 0) {
     stop("T must be a positive integer.")
   }
@@ -143,7 +144,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' @export
 #'
 #' @examples
-#' # Logistic regression example with Beta_NGD_optimum
+#' # Logistic regression example with beta_NGD_optimum
 #' # Set random seed for reproducibility
 #' set.seed(501)
 #'
@@ -173,8 +174,7 @@ beta_NGD <- function(initial_point, eta, gamma, T, f) {
 #' eigen_max <- 0.25 * max(eigenvalues)   #max eigenvalue of hessian
 #'
 #' # Run the beta_NGD_optimum function
-#' result <- beta_NGD_optimum(initial_point, D,
-#'                            eigen_max, epsilon = 0.1, f_value)
+#' result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
 #' point <- result$optimum
 #' f_array <- result$f_array
 #' print("Estimated parameters using beta_NGD_optimum:")

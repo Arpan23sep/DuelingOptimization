@@ -41,6 +41,7 @@
 #' result <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)
 #' print(result)
 alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance = 0.1, f) {
+  #Input checks
   if (!is.function(f)) {
     stop("f must be a valid R function.")
   }
@@ -77,7 +78,7 @@ alpha_beta_NGD <- function(initial_point, alpha, beta, D, tolerance = 0.1, f) {
 
     # Update current point using beta_NGD for the current phase
     x <- beta_NGD(x, eta_k, gamma_k, t_k, f)$optimum
-    print(paste0(k / phase_count * 100, "% Done!"))
+    #print(paste0(k / phase_count * 100, "% Done!"))
   }
 
   #return the result x

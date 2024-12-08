@@ -13,15 +13,14 @@
 #' @examples
 #' # Define an objective function
 #' f <- function(x) sum(x^3-x)
-#'
 #' # Perform sign recovery
 #' signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)
 #' @export
 signRecovery <- function(x, y, delta, f) {
+  #Input checks
   if (!is.numeric(x) || !is.numeric(y)) {
     stop("Both x and y must be numeric vectors.")
   }
-  # Check if x and y have the same length
   if (length(x) != length(y)) {
     stop("x and y must have the same length.")
   }
@@ -31,6 +30,7 @@ signRecovery <- function(x, y, delta, f) {
   if (!is.numeric(delta) || delta <= 0) {
     stop("delta must be a positive numeric value.")
   }
+  #Calling RCPP function
   out <- signRecovery_c(x, y, delta, f)
   #return the recovered sign
   return(out)

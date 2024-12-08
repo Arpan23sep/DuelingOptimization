@@ -30,7 +30,7 @@ Computes the parameters for normalized gradient descent based on the strong conv
 and smoothness properties of the objective function.
 }
 \examples{
-# Logistic regression example with Beta_NGD_optimum
+# Logistic regression example with beta_NGD_optimum
 # Set random seed for reproducibility
 set.seed(501)
 
@@ -60,8 +60,7 @@ eigenvalues <- eigen(Hessian)$values
 eigen_max <- 0.25 * max(eigenvalues)   #max eigenvalue of hessian
 
 # Run the beta_NGD_optimum function
-result <- beta_NGD_optimum(initial_point, D,
-                           eigen_max, epsilon = 0.1, f_value)
+result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f_value)
 point <- result$optimum
 f_array <- result$f_array
 print("Estimated parameters using beta_NGD_optimum:")

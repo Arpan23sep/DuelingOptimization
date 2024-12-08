@@ -38,8 +38,7 @@ A list containing:
 }
 \description{
 This function optimizes a two-layer neural network with sigmoid activation using
-normalized gradient descent. The weights of the neural network are flattened for optimization
-and converted back to their original structure after optimization.
+normalized gradient descent.
 }
 \examples{
 set.seed(567)

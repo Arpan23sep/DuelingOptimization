@@ -1,8 +1,7 @@
 #' Neural Network Optimization with Sigmoid activation
 #'
 #' This function optimizes a two-layer neural network with sigmoid activation using
-#' normalized gradient descent. The weights of the neural network are flattened for optimization
-#' and converted back to their original structure after optimization.
+#' normalized gradient descent.
 #'
 #' @param initial_weights A list containing the initial weights and biases of the neural network:
 #'   \itemize{

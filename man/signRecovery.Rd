@@ -25,7 +25,6 @@ It performs sign recovery by repeatedly comparing two points using the provided 
 \examples{
 # Define an objective function
 f <- function(x) sum(x^3-x)
-
 # Perform sign recovery
 signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)
 }

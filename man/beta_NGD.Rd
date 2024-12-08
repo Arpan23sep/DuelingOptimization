@@ -32,7 +32,7 @@ The function attempts to find an optimal point in a given space by iteratively u
 the initial point in the direction estimated from comparison feedback.
 }
 \examples{
-# Linear regression example with Beta-NGD
+# Linear regression example with beta_NGD
 library(ggplot2)
 # Set random seed for reproducibility
 set.seed(42)
@@ -60,7 +60,7 @@ f_value <- function(beta) {
   sum((y - X \%*\% beta)^2)
 }
 
-# Apply Beta-NGD Optimization
+# Apply beta_NGD Optimization
 result <- beta_NGD(
  c(4, 2, 3, 2),
  c(0.003, 0.007, 0.005, 0.007),
