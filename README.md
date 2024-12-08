@@ -22,15 +22,27 @@ You can install the **DuelingOptimization** package directly from GitHub. Follow
 
 1.  Ensure you have the `devtools` package installed. If not, install it using:
 
-`install.packages("devtools")`
+```{r}
+install.packages("devtools")
+```
 
 2.  Install the **DuelingOptimization** package from GitHub:
 
-`devtools::install_github("Arpan23sep/DuelingOptimization")`
+```{r}
+devtools::install_github("Arpan23sep/DuelingOptimization")
+```
 
-3.  To include vignettes, which provide detailed guidelines and documentation for the package functions, use the following command instead:
+3.  To include vignettes, which provide detailed guidelines and documentation for the package functions, use the following command instead
 
-`devtools::install_github("Arpan23sep/DuelingOptimization", build_vignettes = TRUE, force = TRUE)`
+```{r}
+devtools::install_github("Arpan23sep/DuelingOptimization", build_vignettes = TRUE, force = TRUE)
+```
+
+4.  After installation, you can access the vignette by typing
+
+```{r}
+vignette("DuelOpt", package = "DuelingOptimization")
+```
 
 ## Usage
 
@@ -50,7 +62,9 @@ Implements a normalized gradient descent algorithm based on preference (dueling)
 
 -   f: A convex function representing the objective function to be minimized
 
-`result <- beta_NGD(initial_point, eta, gamma, T, f)`
+```{r}
+result <- beta_NGD(initial_point, eta, gamma, T, f)
+```
 
 #### Return
 
@@ -62,27 +76,31 @@ A list with the following components:
 
 #### Example
 
-`#Define an initial point and the parameters`
+```{r}
+#Define an initial point and the parameters
 
-`initial_point <- c(1, 1)`
+initial_point <- c(1, 1)
 
-`eta <- 0.01`
+eta <- 0.01
 
-`gamma <- 0.1`
+gamma <- 0.1
 
-`T <- 100`
+T <- 100
 
-`f <- function(x) sum(x^2)`
+f <- function(x) sum(x^2)
 
-`optimal_point <- beta_NGD(initial_point, eta, gamma, T, f)`
+optimal_point <- beta_NGD(initial_point, eta, gamma, T, f)
 
-`print(optimal_point)`
+print(optimal_point)
+```
 
 ### 2. alpha_beta_NGD
 
 This function extends *beta_NGD* for optimizing *α-strongly convex* and *β-smooth* functions by running multiple phases of gradient descent. Each phase refines the accuracy and improves convergence rates.
 
-`result <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)`
+```{r}
+result <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)
+```
 
 #### Arguments
 
@@ -99,31 +117,35 @@ The near-optimal decision point for the convex function.
 
 #### Example
 
-`#Set up parameters for strongly convex optimization`
+```{r}
+#Set up parameters for strongly convex optimization
 
-`f <- function(x) sum(x^2) # quadratic function`
+f <- function(x) sum(x^2) # quadratic function
 
-`initial_point <- c(1, 1)`
+initial_point <- c(1, 1)
 
-`alpha <- 0.1`
+alpha <- 0.1
 
-`beta <- 1.0`
+beta <- 1.0
 
-`D <- 2`
+D <- 2
 
-`tolerance <- 0.01`
+tolerance <- 0.01
 
-`#Run the phase-based gradient descent`
+#Run the phase-based gradient descent
 
-`optimal_point <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)`
+optimal_point <- alpha_beta_NGD(initial_point, alpha, beta, D, tolerance, f)
 
-`print(optimal_point)`
+print(optimal_point)
+```
 
 ### 3. beta_NGD_optimum
 
 Computes the parameters for normalized gradient descent based on the strong convexity and smoothness properties of the objective function.
 
-`result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)`
+```{r}
+result <- beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)
+```
 
 ### Arguments
 
@@ -147,23 +169,27 @@ A list with the following components:
 
 #### Example:
 
-`initial_point <- c(1, 1)`
+```{r}
+initial_point <- c(1, 1)
 
-`D <- 4`
+D <- 4
 
-`eigen_max <- 2`
+eigen_max <- 2
 
-`epsilon <- 0.01`
+epsilon <- 0.01
 
-`f <- function(x) sum(x^2)`
+f <- function(x) sum(x^2)
 
-`optimal_point <-beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)`
+optimal_point <-beta_NGD_optimum(initial_point, D, eigen_max, epsilon = 0.1, f)
+```
 
 ### 4.signRecovery
 
-It performs sign recovery by repeatedly comparing two points using the provided objective function.
+It performs sign recovery(noisy case) by repeatedly comparing two points using the provided objective function.
 
-`result <- signRecovery(x, y, delta, f)`
+```{r}
+result <- signRecovery(x, y, delta, f)
+```
 
 #### Arguments:
 
@@ -181,17 +207,21 @@ An integer: +1 if the recovered sign is positive, -1 otherwise.
 
 #### Example
 
-`f <- function(x) sum(x^3-x)`
+```{r}
+f <- function(x) sum(x^3-x)
 
-`# Perform sign recovery`
+# Perform sign recovery
 
-`signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)`
+signRecovery(x = c(1, 2), y = c(3, 4), delta = 0.01, f = f)
+```
 
 ### 5. NN_optimization
 
-This function optimizes a two-layer neural network with sigmoid activation using normalized gradient descent. The weights of the neural network are flattened for optimization and converted back to their original structure after optimization.
+This function optimizes a two-layer neural network with sigmoid activation using normalized gradient descent.
 
-`result <- NN_optimization(initial_weights, X, y, eta, gamma, T)`
+```{r}
+result <- NN_optimization(initial_weights, X, y, eta, gamma, T)
+```
 
 #### Arguments
 
